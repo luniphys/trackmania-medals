@@ -7,7 +7,7 @@ import math
 
 def getToken(mail, password):
     """
-    Get authentification token for Nadeo API
+    Get authentification token for Nadeo API, by first getting ticket from Ubisoft API.
     
     :param mail: Ubisoft login mail adress
     :param password: Ubisoft login password
@@ -17,9 +17,9 @@ def getToken(mail, password):
 
     login = base64.b64encode(f"{mail}:{password}".encode()).decode()
     headers_Ubisoft_ticket = {"Content-Type": "application/json",
-                            "Ubi-AppId": "86263886-327a-4328-ac69-527f0d20a237",
-                            "Authorization": f"Basic {login}",
-                            "User-Agent": "Getting all maps with missing gold medal / N1TRO / luniphys@gmail.com"}
+                              "Ubi-AppId": "86263886-327a-4328-ac69-527f0d20a237",
+                              "Authorization": f"Basic {login}",
+                              "User-Agent": f"Getting all maps with missing gold medal / {mail}"}
 
     response_Ubisoft_ticket = req.post(URL_Ubisoft_ticket, headers=headers_Ubisoft_ticket)
     print(response_Ubisoft_ticket)
@@ -30,7 +30,7 @@ def getToken(mail, password):
     URL_Nadeo_API = "https://prod.trackmania.core.nadeo.online/v2/authentication/token/ubiservices"
     headers_Nadeo_API = {"Content-Type": "application/json",
                         "Authorization": f"ubi_v1 t={ticket}",
-                        "User-Agent": "Getting all maps with missing gold medal / N1TRO / luniphys@gmail.com"}
+                        "User-Agent": f"Getting all maps with missing gold medal / {mail}"}
 
     body_Nadeo_API = {"audience": "NadeoLiveServices"}
 
@@ -45,7 +45,7 @@ def getToken(mail, password):
 
 def getMaps(token):
     """
-    Getting map info of all TOTD until today
+    Getting map info of all TOTD until today as JSON file
     
     :param token: Nadeo API token
     """
