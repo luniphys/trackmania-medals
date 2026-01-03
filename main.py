@@ -8,10 +8,11 @@ import time
 
 def getToken(mail, password, live):
     """
-    Get authentification token for Nadeo API, by first getting ticket from Ubisoft API.
+    Get authentification tokens for Nadeo API, by first getting ticket from Ubisoft API.
     
     :param mail: Ubisoft login mail adress
     :param password: Ubisoft login password
+    :param live: Boolean. True for NadeoLiveServices & False for NadeoServices (Core)
     """
     # Authentification Ubisoft Account
     URL_Ubisoft_ticket = "https://public-ubiservices.ubi.com/v3/profiles/sessions"
@@ -41,17 +42,50 @@ def getToken(mail, password, live):
     response_Nadeop_API = req.post(URL_Nadeo_API, headers=headers_Nadeo_API, json=body_Nadeo_API)
     print(response_Nadeop_API)
     response_Nadeop_API_JSON = response_Nadeop_API.json()
-    token = response_Nadeop_API_JSON["accessToken"]
+    access_token = response_Nadeop_API_JSON["accessToken"]
+    refresh_token = response_Nadeop_API_JSON["refreshToken"]
 
     if live:
-        with open("live_token.txt", "w", encoding="utf-8") as file:
-            file.write(token)
+        with open("access_token_live.txt", "w", encoding="utf-8") as file:
+            file.write(access_token)
+        with open("refresh_token_live.txt", "w", encoding="utf-8") as file:
+            file.write(refresh_token)
     else:
-        with open("core_token.txt", "w", encoding="utf-8") as file:
-            file.write(token)
+        with open("access_token_core.txt", "w", encoding="utf-8") as file:
+            file.write(access_token)
+        with open("refresh_token_core.txt", "w", encoding="utf-8") as file:
+            file.write(refresh_token)
 
 
-def getMaps(token):
+def refreshToken(refreshtoken, live):
+    """
+    Update authentification tokens without the need for re-authenticating the Ubisoft account
+    
+    :param refreshtoken: Old refresh token 
+    :param live: Boolean. True for NadeoLiveServices & False for NadeoServices (Core)
+    """
+    URL_Refresh = "https://prod.trackmania.core.nadeo.online/v2/authentication/token/refresh"
+    headers_Refresh = headers_TOTD = {"Authorization": f"nadeo_v1 t={refreshtoken}"}
+    response_Refresh = req.post(URL_Refresh, headers=headers_Refresh)
+    print(response_Refresh)
+    response_Refresh_JSON = response_Refresh.json()
+    access_token = response_Refresh_JSON["accessToken"]
+    refresh_token = response_Refresh_JSON["refreshToken"]
+
+    if live:
+        with open("access_token_live.txt", "w", encoding="utf-8") as file:
+            file.write(access_token)
+        with open("refresh_token_live.txt", "w", encoding="utf-8") as file:
+            file.write(refresh_token)
+    else:
+        with open("access_token_core.txt", "w", encoding="utf-8") as file:
+            file.write(access_token)
+        with open("refresh_token_core.txt", "w", encoding="utf-8") as file:
+            file.write(refresh_token)
+
+
+
+def getMapInfo(access_token_live):
     """
     Getting map info of all TOTD until today as JSON file
     
@@ -62,32 +96,64 @@ def getMaps(token):
     months_passed = math.ceil(int(((today-release) / np.timedelta64(1, 'D'))) / 365 * 12)
 
     URL_TOTD_Maps = f"https://live-services.trackmania.nadeo.live/api/token/campaign/month?length={months_passed}&offset={0}"
-    headers_TOTD = {"Authorization": f"nadeo_v1 t={token}"}
+    headers_TOTD = {"Authorization": f"nadeo_v1 t={access_token_live}"}
 
     response_TOTD_Maps = req.get(URL_TOTD_Maps, headers=headers_TOTD)
     print(response_TOTD_Maps)
 
     maps = response_TOTD_Maps.json()
-    with open("maps.json", "w", encoding="utf-8") as file:
+    with open("mapInfo.json", "w", encoding="utf-8") as file:
         json.dump(maps, file, ensure_ascii=False, indent=4)
+
+
+def getMapMedals():
+    with open("mapInfo.json", "r", encoding="utf-8") as file:
+        mapInfo = json.load(file)
+
+    for month in mapInfo["monthList"]:
+        for day in month["days"]:
+            if day["mapUid"] != "":
+                #print(day["monthDay"], month["year"], day["mapUid"])
+                pass
+
+    #URL_Records = f"https://live-services.trackmania.nadeo.live/api/token/leaderboard/group/{groupUid}/map/{mapUid}/medals"
     
 
 # Get token as text
-with open("credentials.json", "r") as file:
+with open("credentials.json", "r", encoding="utf-8") as file:
     credentials = json.load(file)
-
 mail = credentials["mail"]
 password = credentials["password"]
 
 #getToken(mail, password, True)
-time.sleep(2)
+#time.sleep(2)
 #getToken(mail, password, False)
-time.sleep(2)
+#time.sleep(2)
 
-with open("live_token.txt", "r", encoding="utf-8") as file:
-    live_token = file.read()
-with open("core_token.txt", "r", encoding="utf-8") as file:
-    core_token = file.read()
+#refreshToken(refresh_token_live, True)
+#time.sleep(2)
+#refreshToken(refresh_token_core, False)
+#time.sleep(2)
 
-#getMaps(live_token)
-time.sleep(2)
+with open("access_token_live.txt", "r", encoding="utf-8") as file:
+    access_token_live = file.read()
+with open("access_token_core.txt", "r", encoding="utf-8") as file:
+    access_token_core = file.read()
+with open("refresh_token_live.txt", "r", encoding="utf-8") as file:
+    refresh_token_live = file.read()
+with open("refresh_token_core.txt", "r", encoding="utf-8") as file:
+    refresh_token_core = file.read()
+
+#getMapInfo(access_token_live)
+#time.sleep(2)
+
+
+
+#getMapMedals()
+
+URL_Records = f"https://live-services.trackmania.nadeo.live/api/token/leaderboard/group/Personal_Best/map/{"THC2KWupo3WpF_aM2KnJiOwW2zb"}/medals" # 24/2023
+headers_Records = {"Authorization": f"nadeo_v1 t={access_token_live}"}
+response_Records = req.get(URL_Records, headers=headers_Records)
+print(response_Records)
+records = response_Records.json()
+print(records)
