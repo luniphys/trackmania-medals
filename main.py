@@ -85,7 +85,7 @@ def refreshToken(refreshtoken, live):
 
 
 
-def getMapInfo(access_token_live):
+def getTOTDMaps(access_token_live):
     """
     Getting map info of all TOTD until today as JSON file
     
@@ -102,21 +102,75 @@ def getMapInfo(access_token_live):
     print(response_TOTD_Maps)
 
     maps = response_TOTD_Maps.json()
-    with open("mapInfo.json", "w", encoding="utf-8") as file:
+    with open("TOTDMaps.json", "w", encoding="utf-8") as file:
         json.dump(maps, file, ensure_ascii=False, indent=4)
 
 
-def getMapMedals():
-    with open("mapInfo.json", "r", encoding="utf-8") as file:
-        mapInfo = json.load(file)
+def getMapMedals(access_token_core):
+    """
+    Getting medal times for all TOTD tracks from Nadeo API
+    
+    :param access_token_core: Authentification token for Core API
+    """
+    with open("TOTDMaps.json", "r", encoding="utf-8") as file:
+        TOTDMaps = json.load(file)
 
-    for month in mapInfo["monthList"]:
+    mapUidLst = list()
+    for month in TOTDMaps["monthList"]:
         for day in month["days"]:
             if day["mapUid"] != "":
-                #print(day["monthDay"], month["year"], day["mapUid"])
-                pass
+                #print(day["monthDay"], month["month"], month["year"], day["mapUid"])
+                mapUidLst.append(day["mapUid"])
+                
+    # len(MapUidLst) > 2000. API only allows list of len < 300. Make parts of 250 elements
+    parts = list()
+    medalLst = list()
+    for i in range(len(mapUidLst)):
+        if ((i % 250 == 0 and i != 0) or i == len(mapUidLst) - 1):
 
-    #URL_Records = f"https://live-services.trackmania.nadeo.live/api/token/leaderboard/group/{groupUid}/map/{mapUid}/medals"
+            parts.append(mapUidLst[i])
+
+            URL_Medals = f"https://prod.trackmania.core.nadeo.online/maps/by-uid/?mapUidList={",".join(parts)}"
+            headers_Medals = {"Authorization": f"nadeo_v1 t={access_token_core}"}
+            response_Medals = req.get(URL_Medals, headers=headers_Medals)
+            print(response_Medals)
+            medals = response_Medals.json()
+
+            for map in medals:
+                medalLst.append(map)
+
+            parts = list()
+            time.sleep(2)
+        else:
+            parts.append(mapUidLst[i])
+   
+    with open("MedalMaps.json", "w", encoding="utf-8") as file:
+        json.dump(medalLst, file, ensure_ascii=False, indent=4)
+
+    
+def makeJSON():
+    """
+    Making a final JSON file with only the relevant info.
+    """
+    with open("TOTDMaps.json", "r", encoding="utf-8") as file:
+        TOTDMaps = json.load(file)
+
+    with open("MedalMaps.json", "r", encoding="utf-8") as file:
+        MedalMaps = json.load(file)
+
+    finalDict = dict()
+    for month in TOTDMaps["monthList"]:
+        for day in month["days"]:
+            if day["mapUid"] != "":
+                finalDict[day["mapUid"]] = {"date": f"{day["monthDay"]}/{month["month"]}/{month["year"]}"}
+
+    for map in MedalMaps:
+        finalDict[map["mapUid"]] = {"name": map["name"], "date": finalDict[map["mapUid"]]["date"], "Author": map["authorScore"], "Gold": map["goldScore"], "Silver": map["silverScore"], "Bronze": map["bronzeScore"]}
+
+    with open("Final.json", "w", encoding="utf-8") as file:
+        json.dump(finalDict, file, ensure_ascii=False, indent=4)
+
+
     
 
 # Get token as text
@@ -126,14 +180,9 @@ mail = credentials["mail"]
 password = credentials["password"]
 
 #getToken(mail, password, True)
-#time.sleep(2)
+#time.sleep(1)
 #getToken(mail, password, False)
-#time.sleep(2)
-
-#refreshToken(refresh_token_live, True)
-#time.sleep(2)
-#refreshToken(refresh_token_core, False)
-#time.sleep(2)
+#time.sleep(1)
 
 with open("access_token_live.txt", "r", encoding="utf-8") as file:
     access_token_live = file.read()
@@ -144,16 +193,18 @@ with open("refresh_token_live.txt", "r", encoding="utf-8") as file:
 with open("refresh_token_core.txt", "r", encoding="utf-8") as file:
     refresh_token_core = file.read()
 
-#getMapInfo(access_token_live)
-#time.sleep(2)
+#refreshToken(refresh_token_live, True)
+#time.sleep(1)
+#refreshToken(refresh_token_core, False)
+#time.sleep(1)
 
 
+#getTOTDMaps(access_token_live)
+#time.sleep(1)
 
-#getMapMedals()
+#getMapMedals(access_token_core)
+#time.sleep(1)
 
-URL_Records = f"https://live-services.trackmania.nadeo.live/api/token/leaderboard/group/Personal_Best/map/{"THC2KWupo3WpF_aM2KnJiOwW2zb"}/medals" # 24/2023
-headers_Records = {"Authorization": f"nadeo_v1 t={access_token_live}"}
-response_Records = req.get(URL_Records, headers=headers_Records)
-print(response_Records)
-records = response_Records.json()
-print(records)
+
+makeJSON()
+time.sleep(1)
