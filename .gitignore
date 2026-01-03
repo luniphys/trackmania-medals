@@ -1,6 +1,3 @@
 credentials.json
+tokens
 test.py
-access_token_live.txt
-access_token_core.txt
-refresh_token_live.txt
-refresh_token_core.txt
