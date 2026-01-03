@@ -4,8 +4,9 @@ import json
 import datetime as dt
 import numpy as np
 import math
+import time
 
-def getToken(mail, password):
+def getToken(mail, password, live):
     """
     Get authentification token for Nadeo API, by first getting ticket from Ubisoft API.
     
@@ -32,15 +33,22 @@ def getToken(mail, password):
                         "Authorization": f"ubi_v1 t={ticket}",
                         "User-Agent": f"Getting all maps with missing gold medal / {mail}"}
 
-    body_Nadeo_API = {"audience": "NadeoLiveServices"}
+    if live:
+        body_Nadeo_API = {"audience": "NadeoLiveServices"}
+    else:
+        body_Nadeo_API = {"audience": "NadeoServices"}
 
     response_Nadeop_API = req.post(URL_Nadeo_API, headers=headers_Nadeo_API, json=body_Nadeo_API)
     print(response_Nadeop_API)
     response_Nadeop_API_JSON = response_Nadeop_API.json()
     token = response_Nadeop_API_JSON["accessToken"]
 
-    with open("token.txt", "w", encoding="utf-8") as file:
-        file.write(token)
+    if live:
+        with open("live_token.txt", "w", encoding="utf-8") as file:
+            file.write(token)
+    else:
+        with open("core_token.txt", "w", encoding="utf-8") as file:
+            file.write(token)
 
 
 def getMaps(token):
@@ -71,10 +79,15 @@ with open("credentials.json", "r") as file:
 mail = credentials["mail"]
 password = credentials["password"]
 
-#getToken(mail, password)
+#getToken(mail, password, True)
+time.sleep(2)
+#getToken(mail, password, False)
+time.sleep(2)
 
+with open("live_token.txt", "r", encoding="utf-8") as file:
+    live_token = file.read()
+with open("core_token.txt", "r", encoding="utf-8") as file:
+    core_token = file.read()
 
-with open("token.txt", "r", encoding="utf-8") as file:
-    token = file.read()
-
-#getMaps(token)
+#getMaps(live_token)
+time.sleep(2)
