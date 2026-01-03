@@ -125,4 +125,3 @@ def makeJSON():
 
 mapUid  = "89I3ZHH0qhCtGYfX3vOf90jz2h4"             # 4/7/2022
 mapId   = "80302944-b40d-4cf8-b25a-00c4824606ed"    # 4/7/2022
-

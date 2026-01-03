@@ -121,10 +121,51 @@ with open("tokens/refresh_token_core.txt", "r", encoding="utf-8") as file:
 
 
 
+# For detailed guide getting the OAuth token, visit: https://webservices.openplanet.dev/oauth/auth 
+
 OAuthIdentifier = "b8a9ff146706324ef114"
-myWebsite = "x"
-URL = f"https://api.trackmania.com/oauth/authorize?response_type=code&client_id={OAuthIdentifier}&redirect_uri={myWebsite}"
+OAuthSecret = "1add8e1e34a9e68a3374269b5539884d49c186a2"
+myWebsite = "https://github.com/luniphys/trackmania-medals"
+
+URL_OAuthCode = f"https://api.trackmania.com/oauth/authorize?response_type=code&client_id={OAuthIdentifier}&redirect_uri={myWebsite}"
+# https://api.trackmania.com/oauth/authorize?response_type=code&client_id=b8a9ff146706324ef114&redirect_uri=https://github.com/luniphys/trackmania-medals
+# To get the needed authentification code, paste above URL in browser. The redirected URL contains the code.
+
+OAuthCode = "def50200d800acf73ae466fce710f14efe5803dcf76a5c18902baa49ff202ca26eaf45f40a4ea4d2fa30b41c2f5c9ddbd7083e687b54be8a6f539c1c858651f3145a791a0434255587aa5063c7d5befb2db6eaae2266e2ab1c7c1666a9ce6f40aaeedca946d2458df4ed84613632bd89b39c5c7edbef05e8ad67198f4a42a5dec6f5efd15213a3b7784eb7fa54115601dcacddeb593446498c74abeff064b1604059dfdeadc9eeafd29ba0fc453e0412925a0d6b12b7b1957779975f6c27c4e6f4991151f6f9789e7b41572ca0958535f9ab5421afd5cddc049c4febcf091a7c4328d8b3f48819790b3caf5934b2eccc2037871beec70801b350ec8134ab35fafc10bed383570e85dd94b0906833962c440d344a501d7ed60c91303e83b4b861ead5ae054f902ed6d0b32cd256e5b8e90be2a3215134fafbbe7837127631213554fe40e4ef761b5c2fef0212fb4f79a6af4e63406e838afd4a74d21e3fc258f4b0a5f624ecaec003b5785891e244850ee11f52cd426561d36961d6db0607f9f7b161a8a8416df8ffcd2417a892e9aee931fb36912c62d17ae9907fd38985676a71033266498f"
+# This code is only valid ONCE!
+
+URL_OAuthToken = "https://api.trackmania.com/api/access_token"
+headers_OAuthToken = {"Content-Type": "application/x-www-form-urlencoded"}
+# body_OAuthToken = f"grant_type=authorization_code&client_id={OAuthIdentifier}&client_secret={OAuthSecret}&code={OAuthCode}&redirect_uri={myWebsite}"
+body_OAuthToken = {"grant_type": "authorization_code",
+                   "client_id": f"{OAuthIdentifier}",
+                   "client_secret": f"{OAuthSecret}",
+                   "code": f"{OAuthCode}",
+                   "redirect_uri": f"{myWebsite}"}
+response_OAuthToken = req.post(URL_OAuthToken, data=body_OAuthToken, headers=headers_OAuthToken)
+print(response_OAuthToken)
+response_OAuthToken_JSON = response_OAuthToken.json()
+access_OAuthToken = response_OAuthToken_JSON["access_token"]
+refresh_OAuthToken = response_OAuthToken_JSON["access_token"]
+# Tokens expire after 1 hour!
+with open("tokens/access_token_oauth.txt", "w", encoding="utf-8") as file:
+            file.write(access_OAuthToken)
+with open("tokens/refresh_token_oauth.txt", "w", encoding="utf-8") as file:
+            file.write(refresh_OAuthToken)
 
 
-URL_OAuth = "https://api.trackmania.com/api/user"
-headers_OAuth = {"Authorization": f"Bearer {token}"}
+
+#TODO: Add refresh token fct for OAuth
+
+
+
+
+with open("tokens/access_token_oauth.txt", "r", encoding="utf-8") as file:
+    access_token_oauth = file.read()
+
+url = "https://api.trackmania.com/api/user"
+headers = {"Authorization": f"Bearer {access_token_oauth}"}
+res = req.get(url, headers=headers)
+print(res)
+res_JSON = res.json()
+print(res_JSON)
