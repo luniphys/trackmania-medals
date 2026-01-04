@@ -72,8 +72,13 @@ def getToken():
     time.sleep(2)
 
     response_Ubisoft_JSON = response_Ubisoft_ticket.json()
-    ticket = response_Ubisoft_JSON["ticket"]
 
+    try:
+        ticket = response_Ubisoft_JSON["ticket"]
+
+    except:
+        print(response_Ubisoft_JSON)
+        return 0
 
     def getNadeoToken(ticket, mail, live):
 
@@ -101,8 +106,14 @@ def getToken():
         time.sleep(2)
 
         response_Nadeop_API_JSON = response_Nadeop_API.json()
-        access_token = response_Nadeop_API_JSON["accessToken"]
-        refresh_token = response_Nadeop_API_JSON["refreshToken"]
+
+        try:
+            access_token = response_Nadeop_API_JSON["accessToken"]
+            refresh_token = response_Nadeop_API_JSON["refreshToken"]
+        
+        except:
+             print(response_Nadeop_API_JSON)
+             return 0
 
         if live:
             with open("tokens/access_token_live.txt", "w", encoding="utf-8") as file:
@@ -153,8 +164,14 @@ def refreshToken():
         time.sleep(2)
 
         response_Refresh_JSON = response_Refresh.json()
-        access_token = response_Refresh_JSON["accessToken"]
-        refresh_token = response_Refresh_JSON["refreshToken"]
+
+        try:
+            access_token = response_Refresh_JSON["accessToken"]
+            refresh_token = response_Refresh_JSON["refreshToken"]
+
+        except:
+             print(response_Refresh_JSON)
+             return 0
 
         if live:
             with open("tokens/access_token_live.txt", "w", encoding="utf-8") as file:
@@ -204,8 +221,13 @@ def getOAuthToken(OAuthCode):
     time.sleep(2)
 
     response_OAuthToken_JSON = response_OAuthToken.json()
-    access_OAuthToken = response_OAuthToken_JSON["access_token"]
-    refresh_OAuthToken = response_OAuthToken_JSON["access_token"]
+
+    try:
+        access_OAuthToken = response_OAuthToken_JSON["access_token"]
+        refresh_OAuthToken = response_OAuthToken_JSON["refresh_token"]
+    except:
+         print(response_OAuthToken_JSON)
+         return 0
 
     # Access token expire after 1 hour! Refresh tokens last 1 month.
 
@@ -230,7 +252,7 @@ def getOAuthCode():
     # https://api.trackmania.com/oauth/authorize?response_type=code&client_id=b8a9ff146706324ef114&redirect_uri=https://github.com/luniphys/trackmania-medals
     # To get the needed authentification code, paste above URL in browser. The redirected URL contains the code.
 
-    OAuthCode = "def50200d800acf73ae466fce710f14efe5803dcf76a5c18902baa49ff202ca26eaf45f40a4ea4d2fa30b41c2f5c9ddbd7083e687b54be8a6f539c1c858651f3145a791a0434255587aa5063c7d5befb2db6eaae2266e2ab1c7c1666a9ce6f40aaeedca946d2458df4ed84613632bd89b39c5c7edbef05e8ad67198f4a42a5dec6f5efd15213a3b7784eb7fa54115601dcacddeb593446498c74abeff064b1604059dfdeadc9eeafd29ba0fc453e0412925a0d6b12b7b1957779975f6c27c4e6f4991151f6f9789e7b41572ca0958535f9ab5421afd5cddc049c4febcf091a7c4328d8b3f48819790b3caf5934b2eccc2037871beec70801b350ec8134ab35fafc10bed383570e85dd94b0906833962c440d344a501d7ed60c91303e83b4b861ead5ae054f902ed6d0b32cd256e5b8e90be2a3215134fafbbe7837127631213554fe40e4ef761b5c2fef0212fb4f79a6af4e63406e838afd4a74d21e3fc258f4b0a5f624ecaec003b5785891e244850ee11f52cd426561d36961d6db0607f9f7b161a8a8416df8ffcd2417a892e9aee931fb36912c62d17ae9907fd38985676a71033266498f"
+    OAuthCode = "def50200376ad80eb3b58aaf082573a1a1ba25a67badf7a151580fd7431d4702be96e97c92ab14ee870263fe55adb851e46ba67d8b40061ab41ce8cd6676a5182cb93d88bacd5b3c5b01a03523a34da9629d4a12d5cc0c0cb9cd84d78de465816be55fc12d944baa4a64ea0f82afe0ddb31d06dd3be8f5193947bda803f6d4008e256ee5f288f5a025d526cb742493e9401671757ae04e1ad3f91333dbc54e0d21cfd36a5cb863f001014a4ec045dad3318fa4328286d9be16c2d487765ac0da3e15ad40146be2ce813ed5239b404133168fcafc3b69dc5752942de8ab6132e6a1beb87f8fef28d51f169414819ee7ad7190cca2cb65443f34060421f134853004a79798ffb9a40647ec6fadd3ac9f4c9d0032373475326a799e8a9377edaefb2162655db40e7468d6cf95abc0a3f109b28f207b0ed2a4ec6fddc48adcf699b755010c38698121b3679e671e9aac2affc6a8188bb211af9042f6bc1f117f41d2a4f701c281ab76fdeaf1b50ea27b86daa15b24ba0106a27f975de165688e8cbe0dbb37cb2913f47070077dc36ca310e1a9d509dc80f73bd780454e689a841e5c06e670c2d933"
     # This code is only valid ONCE!
 
     return OAuthCode
@@ -270,8 +292,14 @@ def refreshOAuthToken():
     time.sleep(2)
 
     response_OAuthToken_JSON = response_OAuthToken.json()
-    access_OAuthToken = response_OAuthToken_JSON["access_token"]
-    refresh_OAuthToken = response_OAuthToken_JSON["access_token"]
+
+    try:
+        access_OAuthToken = response_OAuthToken_JSON["access_token"]
+        refresh_OAuthToken = response_OAuthToken_JSON["refresh_token"]
+    
+    except:
+         print(response_OAuthToken_JSON)
+         return 0
 
     # Access token expire after 1 hour! Refresh tokens last 1 month.
 
@@ -301,7 +329,16 @@ def getAccountId():
         time.sleep(2)
 
         response_accountId_JSON = response_accountId.json()
-        print(response_accountId_JSON)
+
+        try:
+            accountId = response_accountId_JSON["accountId"]
+        
+        except:
+             print(response_accountId_JSON)
+             return 0
+
+        with open("accountId.txt", "w", encoding="utf-8") as file:
+            file.write(accountId)
 
 
 
@@ -310,10 +347,3 @@ refreshToken()
 refreshOAuthToken()
 
 getAccountId()
-
-
-"""
-
-    "accountId" : "14e4e37e-2c29-48d3-9f24-917f07fbb230" # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-}
-"""
