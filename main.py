@@ -23,6 +23,7 @@ def getTOTDMaps():
     headers_TOTD = {"Authorization": f"nadeo_v1 t={access_token_live}"}
     response_TOTD_Maps = req.get(URL_TOTD_Maps, headers=headers_TOTD)
     print("Nadeo TOTD:", response_TOTD_Maps)
+    time.sleep(2)
 
     maps = response_TOTD_Maps.json()
     with open("TOTDMaps.json", "w", encoding="utf-8") as file:
@@ -64,6 +65,7 @@ def getMapMedals():
 
             response_Medals = req.get(URL_Medals, headers=headers_Medals)
             print("Nadeo Medals:", response_Medals)
+            time.sleep(2)
 
             medals = response_Medals.json()
 
@@ -71,7 +73,6 @@ def getMapMedals():
                 medalLst.append(map)
 
             parts = list()
-            time.sleep(2)
 
         else:
             parts.append(mapUidLst[i])
@@ -122,6 +123,22 @@ def makeJSON():
 #makeJSON()
 
 
-
+"""
 mapUid  = "89I3ZHH0qhCtGYfX3vOf90jz2h4"             # 4/7/2022
 mapId   = "80302944-b40d-4cf8-b25a-00c4824606ed"    # 4/7/2022
+
+with open("credentials.json", "r", encoding="utf-8") as file:
+    credentials = json.load(file)
+
+with open("tokens/access_token_core.txt", "r", encoding="utf-8") as file:
+        access_token_core = file.read()
+
+accId = credentials["accountId"]
+url= f"https://prod.trackmania.core.nadeo.online/v2/accounts/{accId}/mapRecords?mapIdList={mapId}"
+headers = {"Authorization": f"nadeo_v1 t={access_token_core}"}
+res = req.get(url, headers=headers)
+print(res)
+time.sleep(2)
+res_JSON = res.json()
+print(res_JSON)
+"""
