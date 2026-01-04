@@ -142,7 +142,7 @@ def refreshToken():
     if not os.path.exists("tokens"):
          os.mkdir("tokens")
 
-    if not os.path.isfile("tokens/access_token_core") or not os.path.isfile("tokens/access_token_live"):
+    if not os.path.isfile("tokens/access_token_core.txt") or not os.path.isfile("tokens/access_token_live.txt"):
          getToken()
          return None
     
@@ -252,7 +252,7 @@ def getOAuthCode():
     # https://api.trackmania.com/oauth/authorize?response_type=code&client_id=b8a9ff146706324ef114&redirect_uri=https://github.com/luniphys/trackmania-medals
     # To get the needed authentification code, paste above URL in browser. The redirected URL contains the code.
 
-    OAuthCode = "def50200376ad80eb3b58aaf082573a1a1ba25a67badf7a151580fd7431d4702be96e97c92ab14ee870263fe55adb851e46ba67d8b40061ab41ce8cd6676a5182cb93d88bacd5b3c5b01a03523a34da9629d4a12d5cc0c0cb9cd84d78de465816be55fc12d944baa4a64ea0f82afe0ddb31d06dd3be8f5193947bda803f6d4008e256ee5f288f5a025d526cb742493e9401671757ae04e1ad3f91333dbc54e0d21cfd36a5cb863f001014a4ec045dad3318fa4328286d9be16c2d487765ac0da3e15ad40146be2ce813ed5239b404133168fcafc3b69dc5752942de8ab6132e6a1beb87f8fef28d51f169414819ee7ad7190cca2cb65443f34060421f134853004a79798ffb9a40647ec6fadd3ac9f4c9d0032373475326a799e8a9377edaefb2162655db40e7468d6cf95abc0a3f109b28f207b0ed2a4ec6fddc48adcf699b755010c38698121b3679e671e9aac2affc6a8188bb211af9042f6bc1f117f41d2a4f701c281ab76fdeaf1b50ea27b86daa15b24ba0106a27f975de165688e8cbe0dbb37cb2913f47070077dc36ca310e1a9d509dc80f73bd780454e689a841e5c06e670c2d933"
+    OAuthCode = "def50200a530b6500434b9f1193e0bca539234b8207f848889433e684e58103928cc525ed643e870e1e9c65818149030e0c8e880c972c791014f3635750b660de71690ca2c7b27fead54f99385651523c832e0979b0715acfb052cde27a0066e6213f0e3ee6ee9561552fbcd0d7e9f9c079bd607ecfc4f53f6e0332866bf51c54770ced844d908053a7934cb21284d195528207132cf18c6f10fad98e562d96660abacc5156ad7118ce346b06965debb183e3383d5fd9cf042a0794d608bb9ca9bed1dd7cf640881ee2f6e480a08483e421043813327aaf52a4c7b50601e81f36c8a01d1386d9391c7f0f73c897fb7de4381cd3493238e3dae5fa0ecfdc52be8e575bfe1b56f606386af6acff7c417cac484cb38fdde86b45cd89010b5eca543f9f3bc4e0038719cab9c691de6cd2078593d90a6f620eae4567edcab29cf10cf82e4f5bc9d82c9abbec261e27f2de3ca6c90663323fd3afaeb38940d36d3f40b6a6acbcd1f933cb41ac523105328f90ed7eb478cd96ec0e66d0c408a94de05972f3ccaf4f6f9c3d818c2c64c9048cd985a988f7e1e4317f07005c0ed25f76f604d3382c0f3d5"
     # This code is only valid ONCE!
 
     return OAuthCode
@@ -346,4 +346,5 @@ refreshToken()
 
 refreshOAuthToken()
 
-getAccountId()
+if not os.path.isfile("accountId"):
+    getAccountId()

@@ -4,6 +4,9 @@ import datetime as dt
 import numpy as np
 import math
 import time
+import os
+
+#from tokens import refreshToken
 
 
 def getTOTDMaps():
@@ -21,12 +24,17 @@ def getTOTDMaps():
 
     URL_TOTD_Maps = f"https://live-services.trackmania.nadeo.live/api/token/campaign/month?length={months_passed}&offset={0}"
     headers_TOTD = {"Authorization": f"nadeo_v1 t={access_token_live}"}
+
     response_TOTD_Maps = req.get(URL_TOTD_Maps, headers=headers_TOTD)
     print("Nadeo TOTD:", response_TOTD_Maps)
     time.sleep(2)
 
     maps = response_TOTD_Maps.json()
-    with open("TOTDMaps.json", "w", encoding="utf-8") as file:
+
+    if not os.path.exists("MapJSONs"):
+        os.mkdir("MapJSONs")
+
+    with open("MapJSONs/TOTDMaps.json", "w", encoding="utf-8") as file:
         json.dump(maps, file, ensure_ascii=False, indent=4)
 
 
@@ -40,7 +48,7 @@ def getMapMedals():
     with open("tokens/access_token_core.txt", "r", encoding="utf-8") as file:
         access_token_core = file.read()
 
-    with open("TOTDMaps.json", "r", encoding="utf-8") as file:
+    with open("MapJSONs/TOTDMaps.json", "r", encoding="utf-8") as file:
         TOTDMaps = json.load(file)
 
     mapUidLst = list()
@@ -77,13 +85,57 @@ def getMapMedals():
         else:
             parts.append(mapUidLst[i])
    
-    with open("MedalMaps.json", "w", encoding="utf-8") as file:
+    with open("MapJSONs/MedalMaps.json", "w", encoding="utf-8") as file:
         json.dump(medalLst, file, ensure_ascii=False, indent=4)
 
 
 
-def getPersonalRecords(tokiii):
-    pass
+def getPersonalRecords():
+
+    with open("tokens/access_token_core.txt", "r", encoding="utf-8") as file:
+        access_token_core = file.read()
+
+    with open("MapJSONs/MedalMaps.json", "r", encoding="utf-8") as file:
+        MedalMaps = json.load(file)
+
+    with open("accountId.txt", "r", encoding="utf-8") as file:
+        accId = file.read()
+
+    mapIdLst = list()
+    for track in MedalMaps:
+        mapIdLst.append(track["mapId"])
+
+    # len(MapIdLst) > 2000. API only allows list of len < 200. Make parts of 150 elements:
+
+    parts = list()
+    PersRecLst = list()
+
+    for i in range(len(mapIdLst)):
+
+        if ((i % 150 == 0 and i != 0) or i == len(mapIdLst) - 1):
+
+            parts.append(mapIdLst[i])
+
+            URL_PBs = f"https://prod.trackmania.core.nadeo.online/v2/accounts/{accId}/mapRecords?mapIdList={",".join(parts)}"
+            headers_PBs = {"Authorization": f"nadeo_v1 t={access_token_core}"}
+
+            response_PBs = req.get(URL_PBs, headers=headers_PBs)
+            print("Nadeo PBs:", response_PBs)
+            time.sleep(2)
+
+            PB = response_PBs.json()
+
+            for map in PB:
+                PersRecLst.append(map)
+
+            parts = list()
+
+        else:
+            parts.append(mapIdLst[i])
+
+
+    with open("MapJSONs/PBMaps.json", "w", encoding="utf-8") as file:
+        json.dump(PersRecLst, file, ensure_ascii=False, indent=4)
 
 
 
@@ -93,10 +145,10 @@ def makeJSON():
     Making a final JSON file with only the relevant info.
     """
 
-    with open("TOTDMaps.json", "r", encoding="utf-8") as file:
+    with open("MapJSONs/TOTDMaps.json", "r", encoding="utf-8") as file:
         TOTDMaps = json.load(file)
 
-    with open("MedalMaps.json", "r", encoding="utf-8") as file:
+    with open("MapJSONs/MedalMaps.json", "r", encoding="utf-8") as file:
         MedalMaps = json.load(file)
 
     finalDict = dict()
@@ -108,37 +160,39 @@ def makeJSON():
     for map in MedalMaps:
         finalDict[map["mapUid"]] = {"name": map["name"], "date": finalDict[map["mapUid"]]["date"], "mapId": map["mapId"], "Author": map["authorScore"], "Gold": map["goldScore"], "Silver": map["silverScore"], "Bronze": map["bronzeScore"]}
 
-    with open("Final.json", "w", encoding="utf-8") as file:
+    with open("MapJSONs/Final.json", "w", encoding="utf-8") as file:
         json.dump(finalDict, file, ensure_ascii=False, indent=4)
 
 
 
-# Get Map Info JSON's
-#getTOTDMaps()
-#time.sleep(2)
+today = str(dt.datetime.now().date())
 
-#getMapMedals()
-#time.sleep(2)
+if not os.path.isfile("lastUpdate.txt"):
+    with open("lastUpdate.txt", "w", encoding="utf-8") as file:
+        file.write(today)
 
-#makeJSON()
+with open("lastUpdate.txt", "r", encoding="utf-8") as file:
+        lastUpdate = file.read()
+
+if today != lastUpdate:
+
+    with open("lastUpdate.txt", "w", encoding="utf-8") as file:
+        file.write(today)
+
+    getTOTDMaps()
+    getMapMedals()
+    makeJSON()
+    getPersonalRecords()
 
 
-"""
-mapUid  = "89I3ZHH0qhCtGYfX3vOf90jz2h4"             # 4/7/2022
-mapId   = "80302944-b40d-4cf8-b25a-00c4824606ed"    # 4/7/2022
+with open("MapJSONs/PBMaps.json", "r", encoding="utf-8") as file:
+    dicLst = json.load(file)
 
-with open("credentials.json", "r", encoding="utf-8") as file:
-    credentials = json.load(file)
+c = 0
+for dic in dicLst:
+    tim = dic["recordScore"]["time"]
+    print(tim)
+    if tim == "":
+        c += 1
 
-with open("tokens/access_token_core.txt", "r", encoding="utf-8") as file:
-        access_token_core = file.read()
-
-accId = credentials["accountId"]
-url= f"https://prod.trackmania.core.nadeo.online/v2/accounts/{accId}/mapRecords?mapIdList={mapId}"
-headers = {"Authorization": f"nadeo_v1 t={access_token_core}"}
-res = req.get(url, headers=headers)
-print(res)
-time.sleep(2)
-res_JSON = res.json()
-print(res_JSON)
-"""
+print(c)
