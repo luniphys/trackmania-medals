@@ -5,8 +5,9 @@ import numpy as np
 import math
 import time
 import os
+import re
 
-#from tokens import refreshToken
+from tokens import refreshToken
 
 
 def getTOTDMaps():
@@ -151,6 +152,9 @@ def makeJSON():
     with open("MapJSONs/MedalMaps.json", "r", encoding="utf-8") as file:
         MedalMaps = json.load(file)
 
+    with open("MapJSONs/PBMaps.json", "r", encoding="utf-8") as file:
+        PBMaps = json.load(file)
+
     finalDict = dict()
     for month in TOTDMaps["monthList"]:
         for day in month["days"]:
@@ -158,11 +162,73 @@ def makeJSON():
                 finalDict[day["mapUid"]] = {"date": f"{day["monthDay"]}/{month["month"]}/{month["year"]}"}
 
     for map in MedalMaps:
-        finalDict[map["mapUid"]] = {"name": map["name"], "date": finalDict[map["mapUid"]]["date"], "mapId": map["mapId"], "Author": map["authorScore"], "Gold": map["goldScore"], "Silver": map["silverScore"], "Bronze": map["bronzeScore"]}
+        finalDict[map["mapUid"]] = {"name": map["name"], "date": finalDict[map["mapUid"]]["date"], "mapId": map["mapId"], "Author": map["authorScore"] / 1000, "Gold": map["goldScore"] / 1000, "Silver": map["silverScore"] / 1000, "Bronze": map["bronzeScore"] / 1000}
 
+    for mapPB in PBMaps:
+        pb = mapPB["recordScore"]["time"]
+        mapId = mapPB["mapId"]
+        for mapFinal in finalDict.keys():
+            if mapPB["mapId"] == finalDict[mapFinal]["mapId"]:
+                finalDict[mapFinal]["medal"] = mapPB["medal"]
+                finalDict[mapFinal]["Pers. Best"] = mapPB["recordScore"]["time"] / 1000
+                finalDict[mapFinal]["Gold delta"] = round(mapPB["recordScore"]["time"] / 1000 - finalDict[mapFinal]["Gold"], 3)
+                finalDict[mapFinal]["mapRecordId"] = mapPB["mapRecordId"]
+
+        
     with open("MapJSONs/Final.json", "w", encoding="utf-8") as file:
         json.dump(finalDict, file, ensure_ascii=False, indent=4)
 
+
+
+def printInfo():
+
+    """
+    Printing the missing gold medal maps & some overall medal info 
+    """
+    
+    def clearTMnames(text):
+
+        """
+        Remove all the color and style codes within the titles of a map
+        
+        :param text: Titel of map
+        """
+
+        placeholder = "\0"
+        text = text.replace("$$", placeholder)
+
+        text = re.sub(r"\$[0-9a-fA-F]{3}", "", text)  # Farben
+        text = re.sub(r"\$[a-zA-Z]", "", text)        # Styles
+
+        return text.replace(placeholder, "$")
+    
+
+
+    with open("MapJSONs/Final.json", "r", encoding="utf-8") as file:
+        FinalMaps = json.load(file)
+
+    countDict = dict()
+
+    for map in FinalMaps:
+        
+        if FinalMaps[map]["Gold delta"] > 0 and FinalMaps[map]["medal"] < 3:
+            
+            print(FinalMaps[map]["date"], ", ", clearTMnames(FinalMaps[map]["name"]), ", +", FinalMaps[map]["Gold delta"], ", ", sep="", end="")
+            
+            if FinalMaps[map]["medal"] == 2:
+                print("Silver")
+
+            elif FinalMaps[map]["medal"] == 1:
+                print("Bronze")
+
+            else:
+                print("Not finished.")
+
+        countDict[FinalMaps[map]["medal"]] = countDict.get(FinalMaps[map]["medal"], 0) + 1
+
+
+    print("\nAuthor: ", countDict[4], ", Gold: ", countDict[3], ", Silver: ", countDict[2], ", Bronze: ", countDict[1], "\n", sep="")
+    
 
 
 today = str(dt.datetime.now().date())
@@ -174,25 +240,15 @@ if not os.path.isfile("lastUpdate.txt"):
 with open("lastUpdate.txt", "r", encoding="utf-8") as file:
         lastUpdate = file.read()
 
-if today != lastUpdate:
+if today != lastUpdate or not os.path.exists("MapJSONs"):
 
     with open("lastUpdate.txt", "w", encoding="utf-8") as file:
         file.write(today)
 
     getTOTDMaps()
     getMapMedals()
-    makeJSON()
     getPersonalRecords()
+    makeJSON()
 
 
-with open("MapJSONs/PBMaps.json", "r", encoding="utf-8") as file:
-    dicLst = json.load(file)
-
-c = 0
-for dic in dicLst:
-    tim = dic["recordScore"]["time"]
-    print(tim)
-    if tim == "":
-        c += 1
-
-print(c)
+printInfo()
