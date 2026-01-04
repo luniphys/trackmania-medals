@@ -6,8 +6,9 @@ import math
 import time
 import os
 import re
+import shutil
 
-from tokens import refreshToken
+#from tokens import refreshToken
 
 
 def getTOTDMaps():
@@ -126,7 +127,26 @@ def getPersonalRecords():
 
             PB = response_PBs.json()
 
+
+
+
+
+
+
             for map in PB:
+                # map is empty when there is no PB driven yet
+                if len(map) == 0:
+                    
+                    map =  {"medal": 0,
+                            "recordScore": {"time": None}}
+                
+
+
+
+
+
+
+
                 PersRecLst.append(map)
 
             parts = list()
@@ -165,18 +185,58 @@ def makeJSON():
         finalDict[map["mapUid"]] = {"name": map["name"], "date": finalDict[map["mapUid"]]["date"], "mapId": map["mapId"], "Author": map["authorScore"] / 1000, "Gold": map["goldScore"] / 1000, "Silver": map["silverScore"] / 1000, "Bronze": map["bronzeScore"] / 1000}
 
     for mapPB in PBMaps:
-        pb = mapPB["recordScore"]["time"]
-        mapId = mapPB["mapId"]
+        
+
+
+
+
+
+
+        if mapPB["recordScore"]["time"] == None: # ----------------------------------------------------------------------------------------------------------------------------
+            pass
+
+
+
+
+
+
+
         for mapFinal in finalDict.keys():
             if mapPB["mapId"] == finalDict[mapFinal]["mapId"]:
                 finalDict[mapFinal]["medal"] = mapPB["medal"]
                 finalDict[mapFinal]["Pers. Best"] = mapPB["recordScore"]["time"] / 1000
-                finalDict[mapFinal]["Gold delta"] = round(mapPB["recordScore"]["time"] / 1000 - finalDict[mapFinal]["Gold"], 3)
                 finalDict[mapFinal]["mapRecordId"] = mapPB["mapRecordId"]
 
         
     with open("MapJSONs/Final.json", "w", encoding="utf-8") as file:
         json.dump(finalDict, file, ensure_ascii=False, indent=4)
+
+
+
+def getWorldRecord(mapUid):
+
+    """
+    Return the world record time for a given mapUid 
+    
+    :param mapUid: map identifier
+    :return WR: world record time
+    """
+
+    with open("tokens/access_token_live.txt", "r", encoding="utf-8") as file:
+        access_token_live = file.read()
+
+    URL_WR = f"https://live-services.trackmania.nadeo.live/api/token/leaderboard/group/Personal_Best/map/{mapUid}/top?length=1&onlyWorld=true"
+    headers_WR = {"Authorization": f"nadeo_v1 t={access_token_live}"}
+
+    response_WR = req.get(URL_WR, headers=headers_WR)
+    #print("Nadeo WR:", response_WR)
+    time.sleep(2)
+
+    response_WR_JSON = response_WR.json()
+    WR = response_WR_JSON["tops"][0]["top"][0]["score"]
+
+    return WR / 1000
+
 
 
 
@@ -207,27 +267,41 @@ def printInfo():
     with open("MapJSONs/Final.json", "r", encoding="utf-8") as file:
         FinalMaps = json.load(file)
 
+    if os.path.isfile("medals.txt"):
+        os.remove("medals.txt")
+
     countDict = dict()
+    print()
 
     for map in FinalMaps:
-        
-        if FinalMaps[map]["Gold delta"] > 0 and FinalMaps[map]["medal"] < 3:
+
+        if FinalMaps[map]["medal"] < 3:
             
-            print(FinalMaps[map]["date"], ", ", clearTMnames(FinalMaps[map]["name"]), ", +", FinalMaps[map]["Gold delta"], ", ", sep="", end="")
+            s = f"{FinalMaps[map]["date"]}, {clearTMnames(FinalMaps[map]["name"])}, WR-Gold delta: {round(FinalMaps[map]["Gold"] - getWorldRecord(map), 3)}, "
             
             if FinalMaps[map]["medal"] == 2:
-                print("Silver")
+                s += "Silver\n"
 
             elif FinalMaps[map]["medal"] == 1:
-                print("Bronze")
+                s += "Bronze\n"
 
             else:
-                print("Not finished.")
+                s += "Not finished.\n"
+
+
+            print(s)
+        
+            with open("medals.txt" , "a", encoding="utf-8") as file:
+                file.write(s)
 
         countDict[FinalMaps[map]["medal"]] = countDict.get(FinalMaps[map]["medal"], 0) + 1
 
 
-    print("\nAuthor: ", countDict[4], ", Gold: ", countDict[3], ", Silver: ", countDict[2], ", Bronze: ", countDict[1], "\n", sep="")
+    freq = f"\nAuthor: {countDict[4]}, Gold: {countDict[3]}, Silver: {countDict[2]}, Bronze: {countDict[1]}\n"
+    
+    print(freq)
+    with open("medals.txt" , "a", encoding="utf-8") as file:
+                file.write(freq)
     
 
 
@@ -240,7 +314,7 @@ if not os.path.isfile("lastUpdate.txt"):
 with open("lastUpdate.txt", "r", encoding="utf-8") as file:
         lastUpdate = file.read()
 
-if today != lastUpdate or not os.path.exists("MapJSONs"):
+if today != lastUpdate or not os.path.isfile("lastUpdate.txt") or not os.path.exists("MapJSONs"):
 
     with open("lastUpdate.txt", "w", encoding="utf-8") as file:
         file.write(today)
@@ -252,3 +326,5 @@ if today != lastUpdate or not os.path.exists("MapJSONs"):
 
 
 printInfo()
+
+shutil.copy("medals.txt", "C:/Users/lunip/Desktop/medals.txt")
