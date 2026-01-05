@@ -8,7 +8,7 @@ import os
 import re
 import shutil
 
-#from tokens import refreshToken
+from tokens import *
 
 
 def getTOTDMaps():
@@ -254,24 +254,24 @@ def printInfo():
             s = f"{FinalMaps[map]["date"]}, {clearTMnames(FinalMaps[map]["name"])}, WR-Gold delta: {round(FinalMaps[map]["Gold"] - getWorldRecord(map), 3)}, "
             
             if FinalMaps[map]["medal"] == 2:
-                s += "Silver\n"
+                s += "Silver"
 
             elif FinalMaps[map]["medal"] == 1:
-                s += "Bronze\n"
+                s += "Bronze"
 
             else:
-                s += "Not finished.\n"
+                s += "No medal"
 
 
-            print(s)
+            print(s + "\n")
         
             with open("medals.txt" , "a", encoding="utf-8") as file:
-                file.write(s)
+                file.write(s + "\n")
 
         countDict[FinalMaps[map]["medal"]] = countDict.get(FinalMaps[map]["medal"], 0) + 1
 
 
-    freq = f"\nAuthor: {countDict[4]}, Gold: {countDict[3]}, Silver: {countDict[2]}, Bronze: {countDict[1]}, Not finished: {countDict[0]}\n"
+    freq = f"\nAuthor: {countDict[4]}, Gold: {countDict[3]}, Silver: {countDict[2]}, Bronze: {countDict[1]}, No mdeal: {countDict[0]}\n"
     
     print(freq)
     with open("medals.txt" , "a", encoding="utf-8") as file:

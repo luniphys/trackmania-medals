@@ -197,6 +197,27 @@ def refreshToken():
 
 
 
+def getOAuthCode():
+
+    """
+    Function for getting the OAuth Code. For now has to be done manually within a browser. Implementation migth follow if possible.
+    For a detailed guide getting the OAuth token, visit: https://webservices.openplanet.dev/oauth/auth
+    """
+ 
+    OAuthIdentifier = "b8a9ff146706324ef114"
+    myWebsite = "https://github.com/luniphys/trackmania-medals"
+
+    URL_OAuthCode = f"https://api.trackmania.com/oauth/authorize?response_type=code&client_id={OAuthIdentifier}&redirect_uri={myWebsite}"
+    # https://api.trackmania.com/oauth/authorize?response_type=code&client_id=b8a9ff146706324ef114&redirect_uri=https://github.com/luniphys/trackmania-medals
+    # To get the needed authentification code, paste above URL in browser. The redirected URL contains the code.
+
+    OAuthCode = "def5020032441f4461f7b15f61b46f544b76152c52b0906416ad1e30d88d1e5798b0df8196f2b2c81cf845db670a70b1440c2cab50ce14c8282865eb066da62fad193cd10bb39b5a878c31a534eb85135e6b4016ccbe185f49b51e209fa2734a8b67bd899749a546a9ac096f0d294365faffc23c39bfa968556696131660414a7b820b989947b034552fd5b83570427e1fb93ca6c3420ddc4c3175ede23c453d639106468edd33fca094194084794d63ed5da068bb9771644932e55dba66b06b482fae304f667e008a510092e919224a2c4319da2cd52bd8f5939f9c04ffca5ea73b7e530c2e9444db5e605ce861a3803360813b94c523dc53337d37d4138dbcf1cac7cc7877803f6934b72018020c2ad41ed6e3350de420961d28e4b61f52278fd0daa70f0c9c5ce1f046635c372644c44a8a17a909f3b6c0c0ebcb54bcb34afac1205554bb6022c1b67d3c47a3af7a88afe9091059155c0bd04cbe55826cf7228bc25e8cc35a7f57548d51f361bf01946d7d971f764a2a0780329597b8131ba60f7713167372461fcb6fcb4c2f9c835a38c76dbfd7e2c180fcf4118c22edde9850c1722e19"
+    # This code is only valid ONCE!
+
+    return OAuthCode
+
+
+
 def getOAuthToken(OAuthCode):
 
     """
@@ -235,27 +256,6 @@ def getOAuthToken(OAuthCode):
                 file.write(access_OAuthToken)
     with open("tokens/refresh_token_oauth.txt", "w", encoding="utf-8") as file:
                 file.write(refresh_OAuthToken)
-
-
-
-def getOAuthCode():
-
-    """
-    Function for getting the OAuth Code. For now has to be done manually within a browser. Implementation migth follow if possible.
-    For a detailed guide getting the OAuth token, visit: https://webservices.openplanet.dev/oauth/auth
-    """
- 
-    OAuthIdentifier = "b8a9ff146706324ef114"
-    myWebsite = "https://github.com/luniphys/trackmania-medals"
-
-    URL_OAuthCode = f"https://api.trackmania.com/oauth/authorize?response_type=code&client_id={OAuthIdentifier}&redirect_uri={myWebsite}"
-    # https://api.trackmania.com/oauth/authorize?response_type=code&client_id=b8a9ff146706324ef114&redirect_uri=https://github.com/luniphys/trackmania-medals
-    # To get the needed authentification code, paste above URL in browser. The redirected URL contains the code.
-
-    OAuthCode = "def502000c0d84a9ebff5274c491b81c43feabf9670d195aceddbc2b581c13503908ae1f5b30a4b0fe41a441a8377a19beedd420d4cfd0409ef8076713643097d3e08745ce58481a94d5dd8bcf2a4d97506beed19493c7c557787cacb022948ea8ffc31fbe5783c7867b250aa4527d6cca2a414db42e1d6076ad1ad641fc35bc6738dae75b3ce860da4202421cf8804263ae12bd67a9f296fe0ffd3762d6cc157fabb1def6356a95cb6dc015c75bbf881df8a3162bf0556c3ff5a666812667d40bfb7dad2a350c353efa4802ec31541149e2456747293d93fb50f3e63c98efc821516582256699934e9efefb068cc250a217e04353656616530a375abd719eec0eafca0f50fed802043fc8985e6f6bcb163996d922488babe8edfad7e8077453c7fb0abe6d9ddec2dd81a13ba0fc74c8ba2061e88d6f39f98a8bd1d390172779956413d74c3d2fd9e63e84c8c6ff18ba7eb8958f291185b7def609ed68a084dc78a70269ed9412547bfc22b5d667eb03e4cd05c6c62eedfe4e9d5ccc82d20672a430b0d10f32bdcb2eae213677faae5bd448415d5a92c426af1400d81b098a8917b2e8cd7917"
-    # This code is only valid ONCE!
-
-    return OAuthCode
 
 
 
