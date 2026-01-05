@@ -1,4 +1,4 @@
-# Getting All TOTD missing Gold medals in Trackmania 2020
+# Getting all missing TOTD Gold medals in Trackmania 2020
 
 I wrote this little programm regarding my quest to get every possible Gold medal of every Track of the Day (TOTD) since release.
 Scrolling through every page in-Game an wait for the medals to load takes a while, therefore this programm.
@@ -13,7 +13,11 @@ Since all JSON's carry a lot more information then needed, I made a final JSON t
 
 Lastly main.py prints and creates a txt file where all tracks are listed that have either a Silver, Bronze medal or aren't driven at all yet.
 
+&nbsp;
 
+&nbsp;
+
+&nbsp;
 
 **!!Important for first exection!!**
 
