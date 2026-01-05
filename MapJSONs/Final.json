@@ -42,7 +42,10 @@
         "Author": 49.738,
         "Gold": 53.0,
         "Silver": 60.0,
-        "Bronze": 75.0
+        "Bronze": 75.0,
+        "medal": 0,
+        "Pers. Best": null,
+        "mapRecordId": null
     },
     "RZVTdWDRv7K7788lhE5iYNN5IM5": {
         "name": "$z$9C3$i$n$s$oTURTLES IN TRAINING! $fff(ft' adni)",

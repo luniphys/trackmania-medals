@@ -93,7 +93,9 @@ def getMapMedals():
 
 
 def getPersonalRecords():
-
+    """
+    Get the personal bests for every track. If track is not driven yet API returns nothing!
+    """
     with open("tokens/access_token_core.txt", "r", encoding="utf-8") as file:
         access_token_core = file.read()
 
@@ -127,26 +129,7 @@ def getPersonalRecords():
 
             PB = response_PBs.json()
 
-
-
-
-
-
-
             for map in PB:
-                # map is empty when there is no PB driven yet
-                if len(map) == 0:
-                    
-                    map =  {"medal": 0,
-                            "recordScore": {"time": None}}
-                
-
-
-
-
-
-
-
                 PersRecLst.append(map)
 
             parts = list()
@@ -184,28 +167,19 @@ def makeJSON():
     for map in MedalMaps:
         finalDict[map["mapUid"]] = {"name": map["name"], "date": finalDict[map["mapUid"]]["date"], "mapId": map["mapId"], "Author": map["authorScore"] / 1000, "Gold": map["goldScore"] / 1000, "Silver": map["silverScore"] / 1000, "Bronze": map["bronzeScore"] / 1000}
 
-    for mapPB in PBMaps:
-        
+    for mapFin in finalDict:
+        for (i, mapPB) in enumerate(PBMaps):
 
+            if finalDict[mapFin]["mapId"] == mapPB["mapId"]:
+                finalDict[mapFin]["medal"] = mapPB["medal"]
+                finalDict[mapFin]["Pers. Best"] = mapPB["recordScore"]["time"] / 1000
+                finalDict[mapFin]["mapRecordId"] = mapPB["mapRecordId"]
+                break
 
-
-
-
-
-        if mapPB["recordScore"]["time"] == None: # ----------------------------------------------------------------------------------------------------------------------------
-            pass
-
-
-
-
-
-
-
-        for mapFinal in finalDict.keys():
-            if mapPB["mapId"] == finalDict[mapFinal]["mapId"]:
-                finalDict[mapFinal]["medal"] = mapPB["medal"]
-                finalDict[mapFinal]["Pers. Best"] = mapPB["recordScore"]["time"] / 1000
-                finalDict[mapFinal]["mapRecordId"] = mapPB["mapRecordId"]
+            if i == len(PBMaps) - 1 and finalDict[mapFin]["mapId"] != mapPB["mapId"]: # For tracks that haven't been driven yet
+                finalDict[mapFin]["medal"] = 0
+                finalDict[mapFin]["Pers. Best"] = None
+                finalDict[mapFin]["mapRecordId"] = None
 
         
     with open("MapJSONs/Final.json", "w", encoding="utf-8") as file:
@@ -246,21 +220,21 @@ def printInfo():
     Printing the missing gold medal maps & some overall medal info 
     """
     
-    def clearTMnames(text):
+    def clearTMnames(title):
 
         """
         Remove all the color and style codes within the titles of a map
         
-        :param text: Titel of map
+        :param title: Titel of map
         """
 
         placeholder = "\0"
-        text = text.replace("$$", placeholder)
+        title = title.replace("$$", placeholder)
 
-        text = re.sub(r"\$[0-9a-fA-F]{3}", "", text)  # Farben
-        text = re.sub(r"\$[a-zA-Z]", "", text)        # Styles
+        title = re.sub(r"\$[0-9a-fA-F]{3}", "", title)  # Farben
+        title = re.sub(r"\$[a-zA-Z]", "", title)        # Styles
 
-        return text.replace(placeholder, "$")
+        return title.replace(placeholder, "$")
     
 
 
@@ -297,12 +271,14 @@ def printInfo():
         countDict[FinalMaps[map]["medal"]] = countDict.get(FinalMaps[map]["medal"], 0) + 1
 
 
-    freq = f"\nAuthor: {countDict[4]}, Gold: {countDict[3]}, Silver: {countDict[2]}, Bronze: {countDict[1]}\n"
+    freq = f"\nAuthor: {countDict[4]}, Gold: {countDict[3]}, Silver: {countDict[2]}, Bronze: {countDict[1]}, Not finished: {countDict[0]}\n"
     
     print(freq)
     with open("medals.txt" , "a", encoding="utf-8") as file:
                 file.write(freq)
     
+
+
 
 
 today = str(dt.datetime.now().date())

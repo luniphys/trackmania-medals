@@ -2,4 +2,6 @@ credentials.json
 tokens
 accountId.txt
 __pycache__
+lastUpdate.txt
+medals.txt
 test.py
