@@ -17,8 +17,6 @@ Lastly main.py prints and creates a txt file where all tracks are listed that ha
 
 &nbsp;
 
-&nbsp;
-
 **!!Important for first exection!!**
 
 The programm once ran for the first time runs autonomously, meaning the refreshing part works. However when running it for the first to time, we have a little issue with OAuth, that I can't seem to automate.
