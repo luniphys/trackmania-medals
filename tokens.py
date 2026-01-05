@@ -4,6 +4,11 @@ import json
 import time
 import os
 
+import http.server
+import socketserver
+import webbrowser
+from urllib.parse import urlparse, parse_qs
+
 
 def getCredent():
 
@@ -69,7 +74,7 @@ def getToken():
 
     response_Ubisoft_ticket = req.post(URL_Ubisoft_ticket, headers=headers_Ubisoft_ticket)
     print("Ubisoft Ticket:", response_Ubisoft_ticket)
-    time.sleep(2)
+    time.sleep(0.5)
 
     response_Ubisoft_JSON = response_Ubisoft_ticket.json()
 
@@ -103,7 +108,7 @@ def getToken():
 
         response_Nadeop_API = req.post(URL_Nadeo_API, headers=headers_Nadeo_API, json=body_Nadeo_API)
         print("Nadeo Authentification:", response_Nadeop_API)
-        time.sleep(2)
+        time.sleep(0.5)
 
         response_Nadeop_API_JSON = response_Nadeop_API.json()
 
@@ -161,7 +166,7 @@ def refreshToken():
         
         response_Refresh = req.post(URL_Refresh, headers=headers_Refresh)
         print("Nadeo Refresh:", response_Refresh)
-        time.sleep(2)
+        time.sleep(0.5)
 
         response_Refresh_JSON = response_Refresh.json()
 
@@ -200,19 +205,42 @@ def refreshToken():
 def getOAuthCode():
 
     """
-    Function for getting the OAuth Code. For now has to be done manually within a browser. Implementation migth follow if possible.
-    For a detailed guide getting the OAuth token, visit: https://webservices.openplanet.dev/oauth/auth
+    Starts webserver on pc, opens OAuth login in browser and catches the OAuthCode that got sent to localhost:8765 via GET
     """
- 
+
     OAuthIdentifier = "b8a9ff146706324ef114"
-    myWebsite = "https://github.com/luniphys/trackmania-medals"
+    PORT = 8765
+    OAuthURI = f"http://localhost:{PORT}/callback"
 
-    URL_OAuthCode = f"https://api.trackmania.com/oauth/authorize?response_type=code&client_id={OAuthIdentifier}&redirect_uri={myWebsite}"
-    # https://api.trackmania.com/oauth/authorize?response_type=code&client_id=b8a9ff146706324ef114&redirect_uri=https://github.com/luniphys/trackmania-medals
-    # To get the needed authentification code, paste above URL in browser. The redirected URL contains the code.
+    URL_OAuthCode = f"https://api.trackmania.com/oauth/authorize?response_type=code&client_id={OAuthIdentifier}&redirect_uri={OAuthURI}"
 
-    OAuthCode = "def502007e126b95ec83a8ed7ad420ebc2a937288e8afcfbbef30e86f88a33617fd47a9f9f55dfa85f9d704b72cb8d01be51a70d1986381e19438bc23bc9db75d04a12073eef0b9bf21af379272169e5db662c8db296a264f03db98ea6a57ddb4068a4378f5f831b22d6341a239a6fb6a541012392f4a223ad95a4085b9870382a139c02a37d9f2430184bb39bfafa9a737773e4a84e7d3d698425dbfc653836c685b98e7a5a351f648cb26309b62c15a36a068c34ff0eb4e52f4560cbc9818aa1b812ef6ef1dc8bf68d8557890c7879e2ca0392487ea8ce02df87405d009a7408cf0bd521e30ec652444d264b5a65ca4aff878534b4add8a519383b590a6f0784878ac02365b6d0124a88cbdcdedb424a2ca5592dbafa4a99f295c8efd75c04a6d6e50ebb516719ded8ca5ff264300a3c807b00d6e5a571113dd0fcba454e38bd1d599625f114f251688e328721eb84fffbab68428134361a413297ddf7cc49f28f9462411900ed33642b28513f038f5a6dd07b6f9ecad2fdf2a89061f9dae0866db8598f33578c78198047dafecd4de80f0609126f23189af330f69194d965ec4fe7e38b92"
-    # This code is only valid ONCE!
+    OAuthCode = None
+
+    class Handler(http.server.SimpleHTTPRequestHandler): # HTTP request class. How local server reacts to browser requests. Every request is an instance of that class
+        
+        def do_GET(self): # Method automatically called when someone calls GET on localhost
+
+            nonlocal OAuthCode
+
+            parsedURL = urlparse(self.path) # catches everything after main URL (http://localhost:8765/) /callback?code=**OAuthCode** and separates its parts. 
+
+            if parsedURL.path == "/callback":
+
+                query = parse_qs(parsedURL.query) # makes dictionary {"code": [**OAuthCode**]}
+                OAuthCode = query.get("code", [None])[0] # Extracts OAuthCode. None if no code exists 
+
+                self.send_response(200) # Tells browser "Everything OK" (200)
+                self.end_headers()      # Ends HTTP reader
+                self.wfile.write(b"Login successfully. You can now close this window.") # b"": bytes
+
+                raise KeyboardInterrupt # Jumps to except below, ends server (stops serve_forever())
+
+    with socketserver.TCPServer(("", PORT), Handler) as server: # Starts HTTP server, "": Callable under localhost
+        webbrowser.open(URL_OAuthCode) # Opens url in standard browser
+        try:
+            server.serve_forever() # Ceeps server running. (Until a request calls method above and except is raised)
+        except KeyboardInterrupt:
+            pass
 
     return OAuthCode
 
@@ -227,7 +255,7 @@ def getOAuthToken(OAuthCode):
     """
     OAuthIdentifier = "b8a9ff146706324ef114"
     OAuthSecret = "1add8e1e34a9e68a3374269b5539884d49c186a2"
-    myWebsite = "https://github.com/luniphys/trackmania-medals"
+    myWebsite = "http://localhost:8765/callback"
 
     URL_OAuthToken = "https://api.trackmania.com/api/access_token"
     headers_OAuthToken = {"Content-Type": "application/x-www-form-urlencoded"}
@@ -239,7 +267,7 @@ def getOAuthToken(OAuthCode):
     
     response_OAuthToken = req.post(URL_OAuthToken, data=body_OAuthToken, headers=headers_OAuthToken)
     print("OAuth Authentification:", response_OAuthToken)
-    time.sleep(2)
+    time.sleep(0.5)
 
     response_OAuthToken_JSON = response_OAuthToken.json()
 
@@ -269,9 +297,9 @@ def refreshOAuthToken():
          os.mkdir("tokens")
 
     if not os.path.isfile("tokens/access_token_oauth.txt"):
-         OAuthCode = getOAuthCode()
-         getOAuthToken(OAuthCode)
-         return None
+        OAuthCode = getOAuthCode()
+        getOAuthToken(OAuthCode)
+        return None
     
 
     with open("tokens/refresh_token_oauth.txt", "r", encoding="utf-8") as file:
@@ -289,7 +317,7 @@ def refreshOAuthToken():
     
     response_OAuthToken = req.post(URL_OAuthToken, data=body_OAuthToken, headers=headers_OAuthToken)
     print("OAuth Refresh:", response_OAuthToken)
-    time.sleep(2)
+    time.sleep(0.5)
 
     response_OAuthToken_JSON = response_OAuthToken.json()
 
@@ -326,7 +354,7 @@ def getAccountId():
 
         response_accountId = req.get(URL_accountId, headers=headers_accountId)
         print("OAuth AccountId", response_accountId)
-        time.sleep(2)
+        time.sleep(0.5)
 
         response_accountId_JSON = response_accountId.json()
 

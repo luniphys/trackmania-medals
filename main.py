@@ -29,7 +29,7 @@ def getTOTDMaps():
 
     response_TOTD_Maps = req.get(URL_TOTD_Maps, headers=headers_TOTD)
     print("Nadeo TOTD:", response_TOTD_Maps)
-    time.sleep(2)
+    time.sleep(0.5)
 
     maps = response_TOTD_Maps.json()
 
@@ -75,7 +75,7 @@ def getMapMedals():
 
             response_Medals = req.get(URL_Medals, headers=headers_Medals)
             print("Nadeo Medals:", response_Medals)
-            time.sleep(2)
+            time.sleep(0.5)
 
             medals = response_Medals.json()
 
@@ -125,7 +125,7 @@ def getPersonalRecords():
 
             response_PBs = req.get(URL_PBs, headers=headers_PBs)
             print("Nadeo PBs:", response_PBs)
-            time.sleep(2)
+            time.sleep(0.5)
 
             PB = response_PBs.json()
 
@@ -204,7 +204,7 @@ def getWorldRecord(mapUid):
 
     response_WR = req.get(URL_WR, headers=headers_WR)
     #print("Nadeo WR:", response_WR)
-    time.sleep(2)
+    time.sleep(0.5)
 
     response_WR_JSON = response_WR.json()
     WR = response_WR_JSON["tops"][0]["top"][0]["score"]
