@@ -271,7 +271,7 @@ def printInfo():
         countDict[FinalMaps[map]["medal"]] = countDict.get(FinalMaps[map]["medal"], 0) + 1
 
 
-    freq = f"\nAuthor: {countDict[4]}, Gold: {countDict[3]}, Silver: {countDict[2]}, Bronze: {countDict[1]}, No mdeal: {countDict[0]}\n"
+    freq = f"\nAuthor: {countDict[4]}, Gold: {countDict[3]}, Silver: {countDict[2]}, Bronze: {countDict[1]}, No medal: {countDict[0]}\n"
     
     print(freq)
     with open("medals.txt" , "a", encoding="utf-8") as file:
@@ -304,3 +304,5 @@ if today != lastUpdate or not os.path.isfile("lastUpdate.txt") or not os.path.ex
 printInfo()
 
 shutil.copy("medals.txt", "C:/Users/lunip/Desktop/medals.txt")
+
+input("Press Enter to exit.")

@@ -38,7 +38,7 @@ def getCredent():
         if ans == "y":
             sure = True
         else:
-            mail = input("Password: ")
+            password = input("Password: ")
 
 
     credentials = {"mail": mail, "password": password}
