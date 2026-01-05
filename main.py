@@ -244,7 +244,7 @@ def printInfo():
     if os.path.isfile("medals.txt"):
         os.remove("medals.txt")
 
-    countDict = dict()
+    countDict = {4: 0, 3: 0, 2: 0, 1: 0, 0: 0}
     print()
 
     for map in FinalMaps:
@@ -281,19 +281,20 @@ def printInfo():
 
 
 
-today = str(dt.datetime.now().date())
+mapsExist = os.path.isfile("MapJSONs/TOTDMaps.json") and os.path.isfile("MapJSONs/MedalMaps.json") and os.path.isfile("MapJSONs/PBMaps.json") and os.path.isfile("MapJSONs/Final.json")
 
-if not os.path.isfile("lastUpdate.txt"):
-    with open("lastUpdate.txt", "w", encoding="utf-8") as file:
-        file.write(today)
+inp = None
 
-with open("lastUpdate.txt", "r", encoding="utf-8") as file:
-        lastUpdate = file.read()
+while inp != "y" and inp != "n":
 
-if today != lastUpdate or not os.path.isfile("lastUpdate.txt") or not os.path.exists("MapJSONs"):
+    if not mapsExist:
+        break
 
-    with open("lastUpdate.txt", "w", encoding="utf-8") as file:
-        file.write(today)
+    print("Update? [y/n]")
+    inp = input("-> ")
+    inp = inp.lower()
+
+if inp == "y" or not mapsExist:
 
     getTOTDMaps()
     getMapMedals()

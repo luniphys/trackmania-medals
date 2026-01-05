@@ -23,6 +23,7 @@ def getCredent():
     while sure == False:
         print(f"Are you sure \'{mail}\' is correct? [y/n]")
         ans = input()
+        ans = ans.lower()
         if ans == "y":
             sure = True
         else:
@@ -35,6 +36,7 @@ def getCredent():
     while sure == False:
         print(f"Are you sure \'{password}\' is correct? [y/n]")
         ans = input()
+        ans = ans.lower()
         if ans == "y":
             sure = True
         else:

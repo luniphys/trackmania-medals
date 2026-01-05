@@ -43,6 +43,18 @@
         "Gold": 53.0,
         "Silver": 60.0,
         "Bronze": 75.0,
+        "medal": 1,
+        "Pers. Best": 71.742,
+        "mapRecordId": "9795addf-f7e4-48d5-a223-92dc9b66d7a2"
+    },
+    "4ts0xZIZeFUF7wh0TpFbft3E2Ah": {
+        "name": "$S$OStadium Atrium",
+        "date": "5/1/2026",
+        "mapId": "d1e2b101-a4ac-43da-8507-1b3ee9a47c2c",
+        "Author": 55.508,
+        "Gold": 59.0,
+        "Silver": 67.0,
+        "Bronze": 84.0,
         "medal": 0,
         "Pers. Best": null,
         "mapRecordId": null
