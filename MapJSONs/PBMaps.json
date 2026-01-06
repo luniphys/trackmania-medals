@@ -1141,22 +1141,22 @@
     },
     {
         "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",
-        "filename": "Replays\\Downloaded\\f8473022-1015-43da-a1d4-5c11e9f8c77b_14e4e37e-2c29-48d3-9f24-917f07fbb230_(0'43''28).replay.gbx",
+        "filename": "Replays\\Downloaded\\f8473022-1015-43da-a1d4-5c11e9f8c77b_14e4e37e-2c29-48d3-9f24-917f07fbb230_(0'40''89).replay.gbx",
         "gameMode": "TimeAttack",
         "gameModeCustomData": "",
         "mapId": "f8473022-1015-43da-a1d4-5c11e9f8c77b",
         "mapRecordId": "57a99b93-aabf-47c8-985b-08d036a24146",
-        "medal": 2,
+        "medal": 3,
         "recordScore": {
             "respawnCount": 0,
             "score": 0,
-            "time": 43285
+            "time": 40894
         },
         "removed": false,
         "scopeId": null,
         "scopeType": "PersonalBest",
-        "timestamp": "2025-09-01T19:13:26+00:00",
-        "url": "https://core.trackmania.nadeo.live/storageObjects/c3519eb4-d37e-43cf-8d9d-24ca306213f3"
+        "timestamp": "2026-01-05T21:01:01+00:00",
+        "url": "https://core.trackmania.nadeo.live/storageObjects/73f1b982-b30d-4617-9fc1-439a00e14766"
     },
     {
         "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",
@@ -1461,6 +1461,25 @@
         "scopeType": "PersonalBest",
         "timestamp": "2025-07-16T19:32:25+00:00",
         "url": "https://core.trackmania.nadeo.live/storageObjects/b5912e5f-5aff-4f74-80cb-6595a1ad51b5"
+    },
+    {
+        "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",
+        "filename": "Replays\\Downloaded\\d1e2b101-a4ac-43da-8507-1b3ee9a47c2c_14e4e37e-2c29-48d3-9f24-917f07fbb230_(0'55''92).replay.gbx",
+        "gameMode": "TimeAttack",
+        "gameModeCustomData": "",
+        "mapId": "d1e2b101-a4ac-43da-8507-1b3ee9a47c2c",
+        "mapRecordId": "7c5fa6f0-049d-4bec-a202-dedc5be02c7d",
+        "medal": 3,
+        "recordScore": {
+            "respawnCount": 0,
+            "score": 0,
+            "time": 55924
+        },
+        "removed": false,
+        "scopeId": null,
+        "scopeType": "PersonalBest",
+        "timestamp": "2026-01-05T19:53:19+00:00",
+        "url": "https://core.trackmania.nadeo.live/storageObjects/38b165bb-c744-41f4-a28e-c7f74cfc3343"
     },
     {
         "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",
@@ -1787,22 +1806,22 @@
     },
     {
         "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",
-        "filename": "Replays\\Downloaded\\f0287091-d05e-4301-8b31-249edaab2651_14e4e37e-2c29-48d3-9f24-917f07fbb230_(1'11''74).replay.gbx",
+        "filename": "Replays\\Downloaded\\f0287091-d05e-4301-8b31-249edaab2651_14e4e37e-2c29-48d3-9f24-917f07fbb230_(0'52''56).replay.gbx",
         "gameMode": "TimeAttack",
         "gameModeCustomData": "",
         "mapId": "f0287091-d05e-4301-8b31-249edaab2651",
         "mapRecordId": "9795addf-f7e4-48d5-a223-92dc9b66d7a2",
-        "medal": 1,
+        "medal": 3,
         "recordScore": {
-            "respawnCount": 3,
+            "respawnCount": 0,
             "score": 0,
-            "time": 71742
+            "time": 52560
         },
         "removed": false,
         "scopeId": null,
         "scopeType": "PersonalBest",
-        "timestamp": "2026-01-05T17:29:09+00:00",
-        "url": "https://core.trackmania.nadeo.live/storageObjects/08bc9503-bbba-4d34-8101-3e901f887960"
+        "timestamp": "2026-01-05T19:56:46+00:00",
+        "url": "https://core.trackmania.nadeo.live/storageObjects/d60d0c3c-dc1d-40bd-80fd-5c3597434fc9"
     },
     {
         "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",
@@ -3991,22 +4010,22 @@
     },
     {
         "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",
-        "filename": "Replays\\Downloaded\\47d8337d-d487-46b3-ae1c-485f0f31f15e_14e4e37e-2c29-48d3-9f24-917f07fbb230_(0'57''38).replay.gbx",
+        "filename": "Replays\\Downloaded\\47d8337d-d487-46b3-ae1c-485f0f31f15e_14e4e37e-2c29-48d3-9f24-917f07fbb230_(0'55''53).replay.gbx",
         "gameMode": "TimeAttack",
         "gameModeCustomData": "",
         "mapId": "47d8337d-d487-46b3-ae1c-485f0f31f15e",
         "mapRecordId": "715a68bc-36c8-4a3b-9672-8f8e7b0468d6",
-        "medal": 2,
+        "medal": 3,
         "recordScore": {
             "respawnCount": 0,
             "score": 0,
-            "time": 57383
+            "time": 55538
         },
         "removed": false,
         "scopeId": null,
         "scopeType": "PersonalBest",
-        "timestamp": "2025-05-25T18:37:06+00:00",
-        "url": "https://core.trackmania.nadeo.live/storageObjects/e13fd226-df52-48d5-998d-fb561d245677"
+        "timestamp": "2026-01-05T20:36:08+00:00",
+        "url": "https://core.trackmania.nadeo.live/storageObjects/2b6af774-7de6-48e5-847e-41629987c2c4"
     },
     {
         "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",
@@ -4599,22 +4618,22 @@
     },
     {
         "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",
-        "filename": "Replays\\Downloaded\\095e62e3-8eb5-41c3-af25-1f5f451f58c3_14e4e37e-2c29-48d3-9f24-917f07fbb230_(0'48''40).replay.gbx",
+        "filename": "Replays\\Downloaded\\095e62e3-8eb5-41c3-af25-1f5f451f58c3_14e4e37e-2c29-48d3-9f24-917f07fbb230_(0'47''78).replay.gbx",
         "gameMode": "TimeAttack",
         "gameModeCustomData": "",
         "mapId": "095e62e3-8eb5-41c3-af25-1f5f451f58c3",
         "mapRecordId": "af8d7c67-0cf6-417f-a183-3d4863a56d98",
-        "medal": 2,
+        "medal": 3,
         "recordScore": {
             "respawnCount": 0,
             "score": 0,
-            "time": 48402
+            "time": 47780
         },
         "removed": false,
         "scopeId": null,
         "scopeType": "PersonalBest",
-        "timestamp": "2025-09-16T21:43:38+00:00",
-        "url": "https://core.trackmania.nadeo.live/storageObjects/55bed454-f8f1-40ab-8c02-ae0fd24e4bfa"
+        "timestamp": "2026-01-05T21:09:39+00:00",
+        "url": "https://core.trackmania.nadeo.live/storageObjects/e7a76a82-6991-44d7-ad4b-7810bd547091"
     },
     {
         "accountId": "14e4e37e-2c29-48d3-9f24-917f07fbb230",

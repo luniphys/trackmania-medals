@@ -22,7 +22,7 @@ def getTOTDMaps():
 
     today = dt.datetime.now()
     release = dt.datetime(2020,7,1)
-    months_passed = math.ceil(int(((today-release) / np.timedelta64(1, 'D'))) / 365 * 12)
+    months_passed = math.ceil((today - release).days / 365 * 12)
 
     URL_TOTD_Maps = f"https://live-services.trackmania.nadeo.live/api/token/campaign/month?length={months_passed}&offset={0}"
     headers_TOTD = {"Authorization": f"nadeo_v1 t={access_token_live}"}
