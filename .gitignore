@@ -6,3 +6,4 @@ medals.txt
 build
 dist
 main.spec
+venv/
