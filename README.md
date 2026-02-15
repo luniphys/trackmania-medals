@@ -2,11 +2,13 @@
 
 A little programm regarding the quest of getting every possible Gold medal of every Track of the Day (TOTD) since release. Scrolling through every page in-game plus their loading times takes a while, therefore this programm.
 
-The programm lists all tracks that you're still missing the Gold medal by:
+This programm lists all tracks that you're still missing the Gold medal by:
 
 Date, Track name, Time difference: World Record - Gold medal, Your current medal
 
 That list will be printed on the console and also a text file is created on the desktop. In addition a counter of how many and which medals you have gained in total is given at the end.
+
+![image](output_example.jpg)
 
 ## How it works
 
@@ -24,6 +26,6 @@ In general you only need to run *main.py* and log in with ur Ubisoft credentials
 
 Note that you can only call any mentioned API maximum twice per second as a limit set by Ubisoft. That's why the code execution is paused for 0.5 seconds after every request, to avoid getting banned. Therefore the programm takes a while before it can list your track data. It's only for the first run though (for me about 40s), after that the tracks get listed much quicker (about 3s).
 
-&nbsp;
+#
 
-**Have fun and don't hesitate contacting me if you find a bug or want to comment on something :)**
+**Have fun and don't hesitate contacting me if you find a bug, want to comment on something or just say hi :)**
