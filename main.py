@@ -303,17 +303,14 @@ if __name__ == "__main__":
 
     main()
 
-    mapsExist = os.path.isfile("MapJSONs/TOTDMaps.json") and os.path.isfile("MapJSONs/MedalMaps.json") and os.path.isfile("MapJSONs/PBMaps.json") and os.path.isfile("MapJSONs/Final.json")
-
-    if not mapsExist:
-
+    if not os.path.exists("MapJSONs"):
         os.mkdir("MapJSONs")
 
-        getTOTDMaps()
-        getMapMedals()
-        getPersonalRecords()
+    getTOTDMaps()
+    getMapMedals()
+    getPersonalRecords()
 
-        makeJSON()
+    makeJSON()
 
 
     printInfo()

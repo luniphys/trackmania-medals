@@ -24,7 +24,7 @@ Since all JSON's carry a lot more information than needed, a final JSON that sli
 
 In general you only need to run *main.py* and log in with ur Ubisoft credentials (once) and it should do everything by itself.
 
-Note that you can only call any mentioned API maximum twice per second as a limit set by Ubisoft. That's why the code execution is paused for 0.5 seconds after every request, to avoid getting banned. Therefore the programm takes a while before it can list your track data. It's only for the first run though (for me about 40s), after that the tracks get listed much quicker (about 3s).
+Note that you can only call any mentioned API maximum twice per second as a limit set by Ubisoft. That's why the code execution is paused for 0.5 seconds after every request, to avoid getting banned. Therefore the programm takes a while before it can list your track data. It's mainly for the first run though (for me about 45s). After that the tracks get listed a little quicker (about 25s).
 
 #
 
