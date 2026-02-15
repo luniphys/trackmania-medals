@@ -7,8 +7,10 @@ import time
 import os
 import re
 import shutil
+from pathlib import Path
 
-from tokens import *
+from tokens import main
+
 
 
 def getTOTDMaps():
@@ -31,10 +33,11 @@ def getTOTDMaps():
     print("Nadeo TOTD:", response_TOTD_Maps)
     time.sleep(0.5)
 
-    maps = response_TOTD_Maps.json()
+    if response_TOTD_Maps.status_code != 200:
+        print("Invalid Nadeo TOTD connection!")
+        return 0
 
-    if not os.path.exists("MapJSONs"):
-        os.mkdir("MapJSONs")
+    maps = response_TOTD_Maps.json()
 
     with open("MapJSONs/TOTDMaps.json", "w", encoding="utf-8") as file:
         json.dump(maps, file, ensure_ascii=False, indent=4)
@@ -77,6 +80,10 @@ def getMapMedals():
             print("Nadeo Medals:", response_Medals)
             time.sleep(0.5)
 
+            if response_Medals.status_code != 200:
+                print("Invalid Nadeo Medals connection!")
+                return 0
+
             medals = response_Medals.json()
 
             for map in medals:
@@ -93,9 +100,11 @@ def getMapMedals():
 
 
 def getPersonalRecords():
+
     """
     Get the personal bests for every track. If track is not driven yet API returns nothing!
     """
+
     with open("tokens/access_token_core.txt", "r", encoding="utf-8") as file:
         access_token_core = file.read()
 
@@ -126,6 +135,10 @@ def getPersonalRecords():
             response_PBs = req.get(URL_PBs, headers=headers_PBs)
             print("Nadeo PBs:", response_PBs)
             time.sleep(0.5)
+
+            if response_PBs.status_code != 200:
+                print("Invalid Nadeo PB connection!")
+                return 0
 
             PB = response_PBs.json()
 
@@ -206,6 +219,10 @@ def getWorldRecord(mapUid):
     #print("Nadeo WR:", response_WR)
     time.sleep(0.5)
 
+    if response_WR.status_code != 200:
+        print("Invalid Nadeo WR connection!")
+        return 0
+
     response_WR_JSON = response_WR.json()
     WR = response_WR_JSON["tops"][0]["top"][0]["score"]
 
@@ -274,36 +291,33 @@ def printInfo():
     freq = f"\nAuthor: {countDict[4]}, Gold: {countDict[3]}, Silver: {countDict[2]}, Bronze: {countDict[1]}, No medal: {countDict[0]}\n"
     
     print(freq)
+
     with open("medals.txt" , "a", encoding="utf-8") as file:
-                file.write(freq)
+        file.write(freq)
     
 
 
 
 
-mapsExist = os.path.isfile("MapJSONs/TOTDMaps.json") and os.path.isfile("MapJSONs/MedalMaps.json") and os.path.isfile("MapJSONs/PBMaps.json") and os.path.isfile("MapJSONs/Final.json")
+if __name__ == "__main__":
 
-inp = None
+    main()
 
-while inp != "y" and inp != "n":
+    mapsExist = os.path.isfile("MapJSONs/TOTDMaps.json") and os.path.isfile("MapJSONs/MedalMaps.json") and os.path.isfile("MapJSONs/PBMaps.json") and os.path.isfile("MapJSONs/Final.json")
 
     if not mapsExist:
-        break
 
-    print("Update? [y/n]")
-    inp = input("-> ")
-    inp = inp.lower()
+        os.mkdir("MapJSONs")
 
-if inp == "y" or not mapsExist:
+        getTOTDMaps()
+        getMapMedals()
+        getPersonalRecords()
 
-    getTOTDMaps()
-    getMapMedals()
-    getPersonalRecords()
-    makeJSON()
+        makeJSON()
 
 
-printInfo()
+    printInfo()
 
-shutil.copy("medals.txt", "C:/Users/lunip/Desktop/medals.txt")
+    shutil.copy("medals.txt", Path.home() / "Desktop/medals.txt")
 
-input("Press Enter to exit.")
+    input("\n\nPress Enter to exit.")

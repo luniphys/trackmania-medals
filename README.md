@@ -1,18 +1,29 @@
-# Getting all missing TOTD Gold medals in Trackmania 2020
+# Missing TOTD Gold medals in Trackmania 2020
 
-I wrote this little programm regarding my quest to get every possible Gold medal of every Track of the Day (TOTD) since release.
-Scrolling through every page in-Game an wait for the medals to load takes a while, therefore this programm.
+A little programm regarding the quest of getting every possible Gold medal of every Track of the Day (TOTD) since release. Scrolling through every page in-game plus their loading times takes a while, therefore this programm.
 
-The tokens.py file is responsible for getting a Ubisoft ticket with which one receives an access and a refresh token from / for the Nadeo API.
+The programm lists all tracks that you're still missing the Gold medal by:
+
+Date, Track name, Time difference: World Record - Gold medal, Your current medal
+
+That list will be printed on the console and also a text file is created on the desktop. In addition a counter of how many and which medals you have gained in total is given at the end.
+
+## How it works
+
+The *tokens.py* file is responsible for getting a Ubisoft ticket with which one receives an access and a refresh token from / for the Nadeo API.
 The refresh tokens are used to update the access tokens which usually expire after a short while. The access tokens we can use to call two Nadeo API endpoints: Core & Live.
 
 From these endpoints the programm creates JSON files for every TOTD with their medal times, which are stored locally. So far this is all generic and nothing account related.
 
-TO retreive the personal best times (PB'S), one needs his accountID. For this the tokens.py file has functions that connect to OAuth Trackmania API. In main.py we can then use this accountID the make a JSON with every PB for every TOTD.
-Since all JSON's carry a lot more information then needed, I made a final JSON that slices down to only all the necessary information. 
+To retreive the personal best times (PB's), one needs their account ID. For this the *tokens.py* file has functions that connect to the OAuth Trackmania API in a similar way to how the previous access/ refresh tokens were reveived. In *main.py* we can then use the account ID to make a JSON with every PB for every TOTD.
+Since all JSON's carry a lot more information than needed, a final JSON that slices down to only necessary information is made. 
 
-In general you only need to run main.py and it should create a txt file where all tracks are listed that have either a Silver, Bronze medal or aren't driven at all yet.
+## Use
+
+In general you only need to run *main.py* and log in with ur Ubisoft credentials (once) and it should do everything by itself.
+
+Note that you can only call any mentioned API maximum twice per second as a limit set by Ubisoft. That's why the code execution is paused for 0.5 seconds after every request, to avoid getting banned. Therefore the programm takes a while before it can list your track data. It's only for the first run though (for me about 40s), after that the tracks get listed much quicker (about 3s).
 
 &nbsp;
 
-**Have fun and don't hesitate contacting me if you find a bug or something is not working :)**
+**Have fun and don't hesitate contacting me if you find a bug or want to comment on something :)**

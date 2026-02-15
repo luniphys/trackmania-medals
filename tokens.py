@@ -10,6 +10,8 @@ import webbrowser
 from urllib.parse import urlparse, parse_qs
 
 
+
+
 def getCredent():
 
     """
@@ -49,14 +51,11 @@ def getCredent():
 
 
 
-def getToken():
+def getTokens():
 
     """
     Get authentification tokens for Nadeo API, by first getting ticket from Ubisoft API.
     """
-
-    if not os.path.isfile("credentials.json"):
-        getCredent()
 
     with open("credentials.json", "r", encoding="utf-8") as file:
         credentials = json.load(file)
@@ -78,19 +77,25 @@ def getToken():
     print("Ubisoft Ticket:", response_Ubisoft_ticket)
     time.sleep(0.5)
 
+    if response_Ubisoft_ticket.status_code != 200:
+         print("Invalid Ubisoft connection!")
+         return 0
+
     response_Ubisoft_JSON = response_Ubisoft_ticket.json()
 
     try:
         ticket = response_Ubisoft_JSON["ticket"]
 
     except:
+        print("No ticket in Ubisoft response!")
         print(response_Ubisoft_JSON)
         return 0
 
-    def getNadeoToken(ticket, mail, live):
+
+    def getNadeoTokens(ticket, mail, live):
 
         """
-        Docstring for getNadeoToken
+        Getting the official Nadeo tokens
         
         :param ticket: Ubisoft ticket
         :param mail: Ubisoft login mail address for user agent header
@@ -112,6 +117,10 @@ def getToken():
         print("Nadeo Authentification:", response_Nadeop_API)
         time.sleep(0.5)
 
+        if response_Nadeop_API.status_code != 200:
+             print("Invalid Nadeo Authentification Connection!")
+             return 0
+
         response_Nadeop_API_JSON = response_Nadeop_API.json()
 
         try:
@@ -119,6 +128,7 @@ def getToken():
             refresh_token = response_Nadeop_API_JSON["refreshToken"]
         
         except:
+             print("No tokens in Nadeo Authentification response!")
              print(response_Nadeop_API_JSON)
              return 0
 
@@ -135,8 +145,8 @@ def getToken():
                 file.write(refresh_token)
 
 
-    getNadeoToken(ticket, mail, True)
-    getNadeoToken(ticket, mail, False)
+    getNadeoTokens(ticket, mail, True)
+    getNadeoTokens(ticket, mail, False)
 
 
 
@@ -145,14 +155,6 @@ def refreshToken():
     """
     Update authentification tokens without the need for re-authenticating the Ubisoft account
     """
-    
-    if not os.path.exists("tokens"):
-         os.mkdir("tokens")
-
-    if not os.path.isfile("tokens/access_token_core.txt") or not os.path.isfile("tokens/access_token_live.txt"):
-         getToken()
-         return None
-    
 
     def getRefreshToken(refreshtoken, live):
 
@@ -170,6 +172,11 @@ def refreshToken():
         print("Nadeo Refresh:", response_Refresh)
         time.sleep(0.5)
 
+        if response_Refresh.status_code != 200:
+             print("Invalid Nadeo Refresh Connection!")
+             getTokens()
+             return 0
+
         response_Refresh_JSON = response_Refresh.json()
 
         try:
@@ -177,6 +184,7 @@ def refreshToken():
             refresh_token = response_Refresh_JSON["refreshToken"]
 
         except:
+             print("No tokens in Nadeo Authentification response!")
              print(response_Refresh_JSON)
              return 0
 
@@ -199,8 +207,11 @@ def refreshToken():
     with open("tokens/refresh_token_core.txt", "r", encoding="utf-8") as file:
         refresh_token_core = file.read()
 
+
     getRefreshToken(refresh_token_live, True)
     getRefreshToken(refresh_token_core, False)
+
+
 
 
 
@@ -271,12 +282,17 @@ def getOAuthToken(OAuthCode):
     print("OAuth Authentification:", response_OAuthToken)
     time.sleep(0.5)
 
+    if response_OAuthToken.status_code != 200:
+         print("Invalid OAuth Access Connection!")
+         return 0
+
     response_OAuthToken_JSON = response_OAuthToken.json()
 
     try:
         access_OAuthToken = response_OAuthToken_JSON["access_token"]
         refresh_OAuthToken = response_OAuthToken_JSON["refresh_token"]
     except:
+         print("No tokens in OAuth Access response!")
          print(response_OAuthToken_JSON)
          return 0
 
@@ -294,16 +310,7 @@ def refreshOAuthToken():
     """
     Refresh OAuth Authentification tokens.
     """
-
-    if not os.path.exists("tokens"):
-         os.mkdir("tokens")
-
-    if not os.path.isfile("tokens/access_token_oauth.txt"):
-        OAuthCode = getOAuthCode()
-        getOAuthToken(OAuthCode)
-        return None
     
-
     with open("tokens/refresh_token_oauth.txt", "r", encoding="utf-8") as file:
         refreshtoken = file.read()
 
@@ -317,18 +324,25 @@ def refreshOAuthToken():
                        "client_secret": f"{OAuthSecret}",
                        "refresh_token": f"{refreshtoken}"}
     
-    response_OAuthToken = req.post(URL_OAuthToken, data=body_OAuthToken, headers=headers_OAuthToken)
-    print("OAuth Refresh:", response_OAuthToken)
+    response_OAuthToken_refresh = req.post(URL_OAuthToken, data=body_OAuthToken, headers=headers_OAuthToken)
+    print("OAuth Refresh:", response_OAuthToken_refresh)
     time.sleep(0.5)
 
-    response_OAuthToken_JSON = response_OAuthToken.json()
+    if response_OAuthToken_refresh.status_code != 200:
+         print("Invalid OAuth Refresh Connection!")
+         OAuthCode = getOAuthCode()
+         getOAuthToken(OAuthCode)
+         return 0
+
+    response_OAuthToken_refresh_JSON = response_OAuthToken_refresh.json()
 
     try:
-        access_OAuthToken = response_OAuthToken_JSON["access_token"]
-        refresh_OAuthToken = response_OAuthToken_JSON["refresh_token"]
+        access_OAuthToken = response_OAuthToken_refresh_JSON["access_token"]
+        refresh_OAuthToken = response_OAuthToken_refresh_JSON["refresh_token"]
     
     except:
-         print(response_OAuthToken_JSON)
+         print("No tokens in OAuth Refresh response!")
+         print(response_OAuthToken_refresh_JSON)
          return 0
 
     # Access token expire after 1 hour! Refresh tokens last 1 month.
@@ -346,35 +360,56 @@ def getAccountId():
     Getting the AccountId saved as txt file
     """
 
+    with open("tokens/access_token_oauth.txt", "r", encoding="utf-8") as file:
+        access_token_oauth = file.read()
+
+    URL_accountId = "https://api.trackmania.com/api/user"
+    headers_accountId = {"Authorization": f"Bearer {access_token_oauth}"}
+
+    response_accountId = req.get(URL_accountId, headers=headers_accountId)
+    print("OAuth AccountId", response_accountId)
+    time.sleep(0.5)
+
+    if response_accountId.status_code != 200:
+        print("Invalid AccountId connection!")
+        return 0
+
+    response_accountId_JSON = response_accountId.json()
+
+    try:
+        accountId = response_accountId_JSON["accountId"]
+    
+    except:
+        print("No Id in AccountId response!")
+        print(response_accountId_JSON)
+        return 0
+
+    with open("accountId.txt", "w", encoding="utf-8") as file:
+        file.write(accountId)
+
+
+
+
+
+def main():
+
+    if not os.path.isfile("credentials.json"):
+        getCredent()
+
+
+    if not os.path.exists("tokens") or not os.path.isfile("tokens/access_token_core.txt") or not os.path.isfile("tokens/access_token_live.txt"):
+        os.mkdir("tokens")
+        getTokens()
+
+    refreshToken()
+
+
+    if not os.path.isfile("tokens/access_token_oauth.txt"):
+        OAuthCode = getOAuthCode()
+        getOAuthToken(OAuthCode)
+
+    refreshOAuthToken()
+
+
     if not os.path.isfile("accountId.txt"):
-
-        with open("tokens/access_token_oauth.txt", "r", encoding="utf-8") as file:
-            access_token_oauth = file.read()
-
-        URL_accountId = "https://api.trackmania.com/api/user"
-        headers_accountId = {"Authorization": f"Bearer {access_token_oauth}"}
-
-        response_accountId = req.get(URL_accountId, headers=headers_accountId)
-        print("OAuth AccountId", response_accountId)
-        time.sleep(0.5)
-
-        response_accountId_JSON = response_accountId.json()
-
-        try:
-            accountId = response_accountId_JSON["accountId"]
-        
-        except:
-             print(response_accountId_JSON)
-             return 0
-
-        with open("accountId.txt", "w", encoding="utf-8") as file:
-            file.write(accountId)
-
-
-
-refreshToken()
-
-refreshOAuthToken()
-
-if not os.path.isfile("accountId"):
-    getAccountId()
+        getAccountId()
