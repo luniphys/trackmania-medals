@@ -8,21 +8,21 @@ Date, Track name, Time difference: World Record - Gold medal, Your current medal
 
 That list will be printed on the console and also a text file is created on the desktop. In addition a counter of how many and which medals you have gained in total is given at the end.
 
-![image](output_example.jpg)
+![image](Images/output_example.jpg)
 
 ## How it works
 
-The *tokens.py* file is responsible for getting a Ubisoft ticket with which one receives an access and a refresh token from / for the Nadeo API.
+The _tokens.py_ file is responsible for getting a Ubisoft ticket with which one receives an access and a refresh token from / for the Nadeo API.
 The refresh tokens are used to update the access tokens which usually expire after a short while. The access tokens we can use to call two Nadeo API endpoints: Core & Live.
 
 From these endpoints the programm creates JSON files for every TOTD with their medal times, which are stored locally. So far this is all generic and nothing account related.
 
-To retreive the personal best times (PB's), one needs their account ID. For this the *tokens.py* file has functions that connect to the OAuth Trackmania API in a similar way to how the previous access/ refresh tokens were reveived. In *main.py* we can then use the account ID to make a JSON with every PB for every TOTD.
-Since all JSON's carry a lot more information than needed, a final JSON that slices down to only necessary information is made. 
+To retreive the personal best times (PB's), one needs their account ID. For this the _tokens.py_ file has functions that connect to the OAuth Trackmania API in a similar way to how the previous access/ refresh tokens were reveived. In _main.py_ we can then use the account ID to make a JSON with every PB for every TOTD.
+Since all JSON's carry a lot more information than needed, a final JSON that slices down to only necessary information is made.
 
 ## Use
 
-In general you only need to run *main.py* and log in with ur Ubisoft credentials (once) and it should do everything by itself.
+In general you only need to run _main.py_ and log in with ur Ubisoft credentials (once) and it should do everything by itself.
 
 Note that you can only call any mentioned API maximum twice per second as a limit set by Ubisoft. That's why the code execution is paused for 0.5 seconds after every request, to avoid getting banned. Therefore the programm takes a while before it can list your track data. It's mainly for the first run though (for me about 45s). After that the tracks get listed a little quicker (about 25s).
 

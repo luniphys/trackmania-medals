@@ -1,10 +1,9 @@
-credentials.json
+PersonalData
 tokens
-accountId.txt
 MapJSONs
-__pycache__
 medals.txt
+venv/
+__pycache__
 build
 dist
 main.spec
-venv/

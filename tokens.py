@@ -46,7 +46,7 @@ def getCredent():
 
 
     credentials = {"mail": mail, "password": password}
-    with open("credentials.json", "w", encoding="utf-8") as file:
+    with open("PersonalData/credentials.json", "w", encoding="utf-8") as file:
         json.dump(credentials, file, ensure_ascii=False, indent=4)
 
 
@@ -57,7 +57,7 @@ def getTokens():
     Get authentification tokens for Nadeo API, by first getting ticket from Ubisoft API.
     """
 
-    with open("credentials.json", "r", encoding="utf-8") as file:
+    with open("PersonalData/credentials.json", "r", encoding="utf-8") as file:
         credentials = json.load(file)
 
     mail = credentials["mail"]
@@ -384,7 +384,7 @@ def getAccountId():
         print(response_accountId_JSON)
         return 0
 
-    with open("accountId.txt", "w", encoding="utf-8") as file:
+    with open("PersonalData/accountId.txt", "w", encoding="utf-8") as file:
         file.write(accountId)
 
 
@@ -393,12 +393,15 @@ def getAccountId():
 
 def main():
 
-    if not os.path.isfile("credentials.json"):
+    if not os.path.isfile("PersonalData/credentials.json"):
+        if not os.path.exists("PersonalData"):
+            os.mkdir("PersonalData")
         getCredent()
 
 
-    if not os.path.exists("tokens") or not os.path.isfile("tokens/access_token_core.txt") or not os.path.isfile("tokens/access_token_live.txt"):
-        os.mkdir("tokens")
+    if not os.path.isfile("tokens/access_token_core.txt") or not os.path.isfile("tokens/access_token_live.txt"):
+        if not os.path.exists("tokens"):
+            os.mkdir("tokens")
         getTokens()
 
     refreshToken()
@@ -411,5 +414,5 @@ def main():
     refreshOAuthToken()
 
 
-    if not os.path.isfile("accountId.txt"):
+    if not os.path.isfile("PersonalData/accountId.txt"):
         getAccountId()

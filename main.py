@@ -111,7 +111,7 @@ def getPersonalRecords():
     with open("MapJSONs/MedalMaps.json", "r", encoding="utf-8") as file:
         MedalMaps = json.load(file)
 
-    with open("accountId.txt", "r", encoding="utf-8") as file:
+    with open("PersonalData/accountId.txt", "r", encoding="utf-8") as file:
         accId = file.read()
 
     mapIdLst = list()
