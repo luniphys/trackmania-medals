@@ -1,9 +1,6 @@
-PersonalData
-tokens
-MapJSONs
-medals.txt
-venv/
-__pycache__
-build
-dist
-main.spec
+src/trackmania-medals/PersonalData
+src/trackmania-medals/tokens
+src/trackmania-medals/MapJSONs
+src/trackmania-medals/medals.txt
+src/trackmania-medals/venv/
+src/trackmania-medals/__pycache__
