@@ -8,7 +8,7 @@ Date, Track name, Time difference: World Record - Gold medal, Your current medal
 
 That list will be printed on the console and also a text file is created on the desktop. In addition a counter of how many and which medals you have gained in total is given at the end.
 
-![image](Images/output_example.jpg)
+![image](docs/Images/output_example.jpg)
 
 ## How it works
 

@@ -1,6 +1,6 @@
-src/trackmania-medals/PersonalData
-src/trackmania-medals/tokens
-src/trackmania-medals/MapJSONs
-src/trackmania-medals/medals.txt
-src/trackmania-medals/venv/
+config/
+data/
+output
+tokens/
+venv/
 src/trackmania-medals/__pycache__
