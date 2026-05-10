@@ -1,7 +1,7 @@
 # Trackmania TOTD Gold Medal Tracker
 
-![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+[![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A command-line tool that helps you track your progress toward earning Gold medals on every Track of the Day (TOTD) in Trackmania 2020 since its release. Browsing every TOTD in-game is slow and tedious — this tool automates the process and gives you a clear overview of what's left.
 
