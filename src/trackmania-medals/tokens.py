@@ -3,6 +3,7 @@ import requests as req
 import json
 import time
 import os
+from pathlib import Path
 
 import http.server
 import socketserver
@@ -10,6 +11,10 @@ import webbrowser
 from urllib.parse import urlparse, parse_qs
 
 
+
+SLEEP_TIME = 1
+
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 
 def getCredent():
@@ -46,7 +51,7 @@ def getCredent():
 
 
     credentials = {"mail": mail, "password": password}
-    with open("PersonalData/credentials.json", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "config/credentials.json", "w", encoding="utf-8") as file:
         json.dump(credentials, file, ensure_ascii=False, indent=4)
 
 
@@ -57,7 +62,7 @@ def getTokens():
     Get authentification tokens for Nadeo API, by first getting ticket from Ubisoft API.
     """
 
-    with open("PersonalData/credentials.json", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "config/credentials.json", "r", encoding="utf-8") as file:
         credentials = json.load(file)
 
     mail = credentials["mail"]
@@ -75,7 +80,7 @@ def getTokens():
 
     response_Ubisoft_ticket = req.post(URL_Ubisoft_ticket, headers=headers_Ubisoft_ticket)
     print("Ubisoft Ticket:", response_Ubisoft_ticket)
-    time.sleep(0.5)
+    time.sleep(SLEEP_TIME)
 
     if response_Ubisoft_ticket.status_code != 200:
          print("Invalid Ubisoft connection!")
@@ -115,7 +120,7 @@ def getTokens():
 
         response_Nadeop_API = req.post(URL_Nadeo_API, headers=headers_Nadeo_API, json=body_Nadeo_API)
         print("Nadeo Authentification:", response_Nadeop_API)
-        time.sleep(0.5)
+        time.sleep(SLEEP_TIME)
 
         if response_Nadeop_API.status_code != 200:
              print("Invalid Nadeo Authentification Connection!")
@@ -133,15 +138,15 @@ def getTokens():
              return 0
 
         if live:
-            with open("tokens/access_token_live.txt", "w", encoding="utf-8") as file:
+            with open(BASE_DIR / "tokens/access_token_live.txt", "w", encoding="utf-8") as file:
                 file.write(access_token)
-            with open("tokens/refresh_token_live.txt", "w", encoding="utf-8") as file:
+            with open(BASE_DIR / "tokens/refresh_token_live.txt", "w", encoding="utf-8") as file:
                 file.write(refresh_token)
 
         else:
-            with open("tokens/access_token_core.txt", "w", encoding="utf-8") as file:
+            with open(BASE_DIR / "tokens/access_token_core.txt", "w", encoding="utf-8") as file:
                 file.write(access_token)
-            with open("tokens/refresh_token_core.txt", "w", encoding="utf-8") as file:
+            with open(BASE_DIR / "tokens/refresh_token_core.txt", "w", encoding="utf-8") as file:
                 file.write(refresh_token)
 
 
@@ -170,7 +175,7 @@ def refreshToken():
         
         response_Refresh = req.post(URL_Refresh, headers=headers_Refresh)
         print("Nadeo Refresh:", response_Refresh)
-        time.sleep(0.5)
+        time.sleep(SLEEP_TIME)
 
         if response_Refresh.status_code != 200:
              print("Invalid Nadeo Refresh Connection!")
@@ -189,22 +194,22 @@ def refreshToken():
              return 0
 
         if live:
-            with open("tokens/access_token_live.txt", "w", encoding="utf-8") as file:
+            with open(BASE_DIR / "tokens/access_token_live.txt", "w", encoding="utf-8") as file:
                 file.write(access_token)
-            with open("tokens/refresh_token_live.txt", "w", encoding="utf-8") as file:
+            with open(BASE_DIR / "tokens/refresh_token_live.txt", "w", encoding="utf-8") as file:
                 file.write(refresh_token)
 
         else:
-            with open("tokens/access_token_core.txt", "w", encoding="utf-8") as file:
+            with open(BASE_DIR / "tokens/access_token_core.txt", "w", encoding="utf-8") as file:
                 file.write(access_token)
-            with open("tokens/refresh_token_core.txt", "w", encoding="utf-8") as file:
+            with open(BASE_DIR / "tokens/refresh_token_core.txt", "w", encoding="utf-8") as file:
                 file.write(refresh_token)
 
 
-    with open("tokens/refresh_token_live.txt", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/refresh_token_live.txt", "r", encoding="utf-8") as file:
         refresh_token_live = file.read()
 
-    with open("tokens/refresh_token_core.txt", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/refresh_token_core.txt", "r", encoding="utf-8") as file:
         refresh_token_core = file.read()
 
 
@@ -280,7 +285,7 @@ def getOAuthToken(OAuthCode):
     
     response_OAuthToken = req.post(URL_OAuthToken, data=body_OAuthToken, headers=headers_OAuthToken)
     print("OAuth Authentification:", response_OAuthToken)
-    time.sleep(0.5)
+    time.sleep(SLEEP_TIME)
 
     if response_OAuthToken.status_code != 200:
          print("Invalid OAuth Access Connection!")
@@ -298,9 +303,9 @@ def getOAuthToken(OAuthCode):
 
     # Access token expire after 1 hour! Refresh tokens last 1 month.
 
-    with open("tokens/access_token_oauth.txt", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/access_token_oauth.txt", "w", encoding="utf-8") as file:
                 file.write(access_OAuthToken)
-    with open("tokens/refresh_token_oauth.txt", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/refresh_token_oauth.txt", "w", encoding="utf-8") as file:
                 file.write(refresh_OAuthToken)
 
 
@@ -311,7 +316,7 @@ def refreshOAuthToken():
     Refresh OAuth Authentification tokens.
     """
     
-    with open("tokens/refresh_token_oauth.txt", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/refresh_token_oauth.txt", "r", encoding="utf-8") as file:
         refreshtoken = file.read()
 
     OAuthIdentifier = "b8a9ff146706324ef114"
@@ -326,7 +331,7 @@ def refreshOAuthToken():
     
     response_OAuthToken_refresh = req.post(URL_OAuthToken, data=body_OAuthToken, headers=headers_OAuthToken)
     print("OAuth Refresh:", response_OAuthToken_refresh)
-    time.sleep(0.5)
+    time.sleep(SLEEP_TIME)
 
     if response_OAuthToken_refresh.status_code != 200:
          print("Invalid OAuth Refresh Connection!")
@@ -347,9 +352,9 @@ def refreshOAuthToken():
 
     # Access token expire after 1 hour! Refresh tokens last 1 month.
 
-    with open("tokens/access_token_oauth.txt", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/access_token_oauth.txt", "w", encoding="utf-8") as file:
                 file.write(access_OAuthToken)
-    with open("tokens/refresh_token_oauth.txt", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/refresh_token_oauth.txt", "w", encoding="utf-8") as file:
                 file.write(refresh_OAuthToken)
 
 
@@ -360,7 +365,7 @@ def getAccountId():
     Getting the AccountId saved as txt file
     """
 
-    with open("tokens/access_token_oauth.txt", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/access_token_oauth.txt", "r", encoding="utf-8") as file:
         access_token_oauth = file.read()
 
     URL_accountId = "https://api.trackmania.com/api/user"
@@ -368,7 +373,7 @@ def getAccountId():
 
     response_accountId = req.get(URL_accountId, headers=headers_accountId)
     print("OAuth AccountId", response_accountId)
-    time.sleep(0.5)
+    time.sleep(SLEEP_TIME)
 
     if response_accountId.status_code != 200:
         print("Invalid AccountId connection!")
@@ -384,7 +389,7 @@ def getAccountId():
         print(response_accountId_JSON)
         return 0
 
-    with open("PersonalData/accountId.txt", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "config/accountId.txt", "w", encoding="utf-8") as file:
         file.write(accountId)
 
 
@@ -393,26 +398,26 @@ def getAccountId():
 
 def main():
 
-    if not os.path.isfile("PersonalData/credentials.json"):
-        if not os.path.exists("PersonalData"):
-            os.mkdir("PersonalData")
+    if not os.path.isfile(BASE_DIR / "config/credentials.json"):
+        if not os.path.exists(BASE_DIR / "config"):
+            os.mkdir(BASE_DIR / "config")
         getCredent()
 
 
-    if not os.path.isfile("tokens/access_token_core.txt") or not os.path.isfile("tokens/access_token_live.txt"):
-        if not os.path.exists("tokens"):
-            os.mkdir("tokens")
+    if not os.path.isfile(BASE_DIR / "tokens/access_token_core.txt") or not os.path.isfile(BASE_DIR / "tokens/access_token_live.txt"):
+        if not os.path.exists(BASE_DIR / "tokens"):
+            os.mkdir(BASE_DIR / "tokens")
         getTokens()
 
     refreshToken()
 
 
-    if not os.path.isfile("tokens/access_token_oauth.txt"):
+    if not os.path.isfile(BASE_DIR / "tokens/access_token_oauth.txt"):
         OAuthCode = getOAuthCode()
         getOAuthToken(OAuthCode)
 
     refreshOAuthToken()
 
 
-    if not os.path.isfile("PersonalData/accountId.txt"):
+    if not os.path.isfile(BASE_DIR / "config/accountId.txt"):
         getAccountId()

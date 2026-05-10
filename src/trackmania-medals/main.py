@@ -13,13 +13,18 @@ from tokens import main
 
 
 
+SLEEP_TIME = 1
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+
+
 def getTOTDMaps():
 
     """
     Getting map info of all TOTD until today as JSON file
     """
 
-    with open("tokens/access_token_live.txt", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/access_token_live.txt", "r", encoding="utf-8") as file:
         access_token_live = file.read()
 
     today = dt.datetime.now()
@@ -31,7 +36,7 @@ def getTOTDMaps():
 
     response_TOTD_Maps = req.get(URL_TOTD_Maps, headers=headers_TOTD)
     print("Nadeo TOTD:", response_TOTD_Maps)
-    time.sleep(0.5)
+    time.sleep(SLEEP_TIME)
 
     if response_TOTD_Maps.status_code != 200:
         print("Invalid Nadeo TOTD connection!")
@@ -39,7 +44,7 @@ def getTOTDMaps():
 
     maps = response_TOTD_Maps.json()
 
-    with open("MapJSONs/TOTDMaps.json", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/TOTDMaps.json", "w", encoding="utf-8") as file:
         json.dump(maps, file, ensure_ascii=False, indent=4)
 
 
@@ -50,10 +55,10 @@ def getMapMedals():
     Getting medal times for all TOTD tracks from Nadeo API
     """
 
-    with open("tokens/access_token_core.txt", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/access_token_core.txt", "r", encoding="utf-8") as file:
         access_token_core = file.read()
 
-    with open("MapJSONs/TOTDMaps.json", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/TOTDMaps.json", "r", encoding="utf-8") as file:
         TOTDMaps = json.load(file)
 
     mapUidLst = list()
@@ -78,7 +83,7 @@ def getMapMedals():
 
             response_Medals = req.get(URL_Medals, headers=headers_Medals)
             print("Nadeo Medals:", response_Medals)
-            time.sleep(0.5)
+            time.sleep(SLEEP_TIME)
 
             if response_Medals.status_code != 200:
                 print("Invalid Nadeo Medals connection!")
@@ -94,7 +99,7 @@ def getMapMedals():
         else:
             parts.append(mapUidLst[i])
    
-    with open("MapJSONs/MedalMaps.json", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/MedalMaps.json", "w", encoding="utf-8") as file:
         json.dump(medalLst, file, ensure_ascii=False, indent=4)
 
 
@@ -105,13 +110,13 @@ def getPersonalRecords():
     Get the personal bests for every track. If track is not driven yet API returns nothing!
     """
 
-    with open("tokens/access_token_core.txt", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/access_token_core.txt", "r", encoding="utf-8") as file:
         access_token_core = file.read()
 
-    with open("MapJSONs/MedalMaps.json", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/MedalMaps.json", "r", encoding="utf-8") as file:
         MedalMaps = json.load(file)
 
-    with open("PersonalData/accountId.txt", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "config/accountId.txt", "r", encoding="utf-8") as file:
         accId = file.read()
 
     mapIdLst = list()
@@ -134,7 +139,7 @@ def getPersonalRecords():
 
             response_PBs = req.get(URL_PBs, headers=headers_PBs)
             print("Nadeo PBs:", response_PBs)
-            time.sleep(0.5)
+            time.sleep(SLEEP_TIME)
 
             if response_PBs.status_code != 200:
                 print("Invalid Nadeo PB connection!")
@@ -151,7 +156,7 @@ def getPersonalRecords():
             parts.append(mapIdLst[i])
 
 
-    with open("MapJSONs/PBMaps.json", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/PBMaps.json", "w", encoding="utf-8") as file:
         json.dump(PersRecLst, file, ensure_ascii=False, indent=4)
 
 
@@ -162,13 +167,13 @@ def makeJSON():
     Making a final JSON file with only the relevant info.
     """
 
-    with open("MapJSONs/TOTDMaps.json", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/TOTDMaps.json", "r", encoding="utf-8") as file:
         TOTDMaps = json.load(file)
 
-    with open("MapJSONs/MedalMaps.json", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/MedalMaps.json", "r", encoding="utf-8") as file:
         MedalMaps = json.load(file)
 
-    with open("MapJSONs/PBMaps.json", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/PBMaps.json", "r", encoding="utf-8") as file:
         PBMaps = json.load(file)
 
     finalDict = dict()
@@ -195,7 +200,7 @@ def makeJSON():
                 finalDict[mapFin]["mapRecordId"] = None
 
         
-    with open("MapJSONs/Final.json", "w", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/Final.json", "w", encoding="utf-8") as file:
         json.dump(finalDict, file, ensure_ascii=False, indent=4)
 
 
@@ -209,7 +214,7 @@ def getWorldRecord(mapUid):
     :return WR: world record time
     """
 
-    with open("tokens/access_token_live.txt", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "tokens/access_token_live.txt", "r", encoding="utf-8") as file:
         access_token_live = file.read()
 
     URL_WR = f"https://live-services.trackmania.nadeo.live/api/token/leaderboard/group/Personal_Best/map/{mapUid}/top?length=1&onlyWorld=true"
@@ -217,7 +222,7 @@ def getWorldRecord(mapUid):
 
     response_WR = req.get(URL_WR, headers=headers_WR)
     #print("Nadeo WR:", response_WR)
-    time.sleep(0.5)
+    time.sleep(SLEEP_TIME)
 
     if response_WR.status_code != 200:
         print("Invalid Nadeo WR connection!")
@@ -255,11 +260,11 @@ def printInfo():
     
 
 
-    with open("MapJSONs/Final.json", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "data/Final.json", "r", encoding="utf-8") as file:
         FinalMaps = json.load(file)
 
-    if os.path.isfile("medals.txt"):
-        os.remove("medals.txt")
+    if os.path.isfile(BASE_DIR / "output/medals.txt"):
+        os.remove(BASE_DIR / "output/medals.txt")
 
     countDict = {4: 0, 3: 0, 2: 0, 1: 0, 0: 0}
     print()
@@ -282,7 +287,7 @@ def printInfo():
 
             print(s + "\n")
         
-            with open("medals.txt" , "a", encoding="utf-8") as file:
+            with open(BASE_DIR / "output/medals.txt" , "a", encoding="utf-8") as file:
                 file.write(s + "\n")
 
         countDict[FinalMaps[map]["medal"]] = countDict.get(FinalMaps[map]["medal"], 0) + 1
@@ -292,7 +297,7 @@ def printInfo():
     
     print(freq)
 
-    with open("medals.txt" , "a", encoding="utf-8") as file:
+    with open(BASE_DIR / "output/medals.txt" , "a", encoding="utf-8") as file:
         file.write(freq)
     
 
@@ -303,8 +308,8 @@ if __name__ == "__main__":
 
     main()
 
-    if not os.path.exists("MapJSONs"):
-        os.mkdir("MapJSONs")
+    if not os.path.exists(BASE_DIR / "data"):
+        os.mkdir(BASE_DIR / "data")
 
     getTOTDMaps()
     getMapMedals()
@@ -315,6 +320,6 @@ if __name__ == "__main__":
 
     printInfo()
 
-    shutil.copy("medals.txt", Path.home() / "Desktop/medals.txt")
+    shutil.copy(BASE_DIR / "output/medals.txt", Path.home() / "Desktop/medals.txt")
 
     input("\n\nPress Enter to exit.")
