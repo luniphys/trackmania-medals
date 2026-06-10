@@ -126,12 +126,17 @@ docker pull luniphys/trackmania-medals
 ### Run the container
 
 ```bash
-docker run --rm -it trackmania-medals
+docker run --rm -it \
+  -v trackmania_config:/app/config \
+  -v trackmania_tokens:/app/tokens \
+  -v trackmania_output:/app/output \
+  trackmania-medals
 ```
 
 ### Notes
 
-- Run the container in interactive mode ```-it```
+- Run the container in interactive mode: ```-it```
+- Using Docker volumes to persist `config/`, `tokens/` & `output/`
 
 
 
