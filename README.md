@@ -1,3 +1,4 @@
+[![Docker](https://img.shields.io/badge/Docker-%230db7ed.svg?&logo=docker&logoColor=white)](https://hub.docker.com/r/luniphys/trackmania-medals)
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -7,12 +8,44 @@ A command-line tool that helps you track your progress toward earning Gold medal
 
 ![Output example](docs/Images/output_example.jpg)
 
+## Table of Contents
+
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [How It Works](#how-it-works)
+- [Prerequisites](#prerequisites)
+- [Usage](#usage)
+- [Docker](#docker)
+- [Feedback](#feedback)
+
+
 ## Features
 
 - Lists all TOTDs where you are still missing the Gold medal
 - Displays for each track: **Date**, **Track name**, **Time gap (World Record → Gold medal time)**, and your **current personal medal**
 - Outputs results both to the console and as a `.txt` file on the desktop
 - Summarizes your total medal count of all TOTD maps at the end
+
+
+## Project Structure
+
+```
+├── config/
+│   ├── accountId.txt          # Your Trackmania account ID
+│   └── credentials.json       # Ubisoft login credentials
+├── data/
+│   ├── TOTDMaps.json          # TOTD map metadata
+│   ├── MedalMaps.json         # Medal times per map
+│   ├── PBMaps.json            # Your personal bests
+│   └── Final.json             # Merged data
+├── output/
+│   └── medals.txt             # Result file
+├── src/trackmania-medals/
+│   ├── main.py                # Map data retrieving functions
+│   └── tokens.py              # Token generation functions
+└── tokens/                    # Stored tokens
+```
+
 
 ## How It Works
 
@@ -37,6 +70,7 @@ Once authenticated, `main.py` performs the following steps:
 
 All JSON files are stored locally under `data/` to reduce redundant API calls.
 
+
 ## Prerequisites
 
 - Python 3.x
@@ -47,39 +81,60 @@ All JSON files are stored locally under `data/` to reduce redundant API calls.
   numpy
   ```
 
+
 ## Usage
 
 1. Clone the repository.
-2. Run `main.py`:
-   ```bash
+  ```bash
+   git clone https://github.com/luniphys/trackmania-medals.git
+   ```
+2. Install Python packages
+  ```bash
+   pip install -r requirements.txt
+   ```
+3. Run `main.py`:
+  ```bash
    python src/trackmania-medals/main.py
    ```
 3. On first run, enter your Ubisoft credentials. Tokens are saved locally for future runs.
 
 > **Note:** The Nadeo API has a rate limit of **2 requests per second**. The tool automatically pauses between requests to stay within limits. As a result, the first run takes over **1 minute**. (Subsequent runs, with cached data, are faster).
 
-> **Note:** The token retrievement is done inside `main.py`, so there's no need to run `tokens.py`.
+> **Note:** The token retrievement is also done via `main.py`, so there's no need to run `tokens.py`.
 
 
-## Project Structure
+## Docker
 
-```
-├── config/
-│   ├── accountId.txt          # Your Trackmania account ID
-│   └── credentials.json       # Ubisoft login credentials
-├── data/
-│   ├── TOTDMaps.json          # TOTD map metadata
-│   ├── MedalMaps.json         # Medal times per map
-│   ├── PBMaps.json            # Your personal bests
-│   └── Final.json             # Merged data
-├── output/
-│   └── medals.txt             # Result file
-├── src/trackmania-medals/
-│   ├── main.py                # Map data retrieving functions
-│   └── tokens.py              # Token generation functions
-└── tokens/                    # Stored tokens
+A Dockerfile is included to provide a reproducible runtime environment with all required dependencies.
+
+### Build the image
+
+From the repository root, build the Docker image with:
+
+```bash
+docker build -t trackmania-medals .
 ```
 
-## Contributing & Feedback
+### Pull from Docker Hub
+
+A prebuilt image is also available on [Docker Hub](https://hub.docker.com/r/luniphys/trackmania-medals):
+
+```bash
+docker pull luniphys/trackmania-medals
+```
+
+### Run the container
+
+```bash
+docker run --rm -it trackmania-medals
+```
+
+### Notes
+
+- Run the container in interactive mode ```-it```
+
+
+
+## Feedback
 
 Bug reports, suggestions, and general feedback are welcome. Feel free reach out :)
