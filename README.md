@@ -53,11 +53,10 @@ A command-line tool that helps you track your progress toward earning Gold medal
 
 `tokens.py` handles the full authentication flow:
 
-1. Logs in with your Ubisoft credentials to obtain a Ubisoft ticket.
-2. Exchanges the ticket for **access** and **refresh tokens** for the Nadeo API.
-3. Refresh tokens are used to renew access tokens before they expire.
-4. Two separate Nadeo API audiences are used: **Core** & **Live**.
-5. A separate OAuth flow connects to the Trackmania OAuth API to retrieve your **account ID**, which is required for personal best times (PBs) on each map.
+1. Getting for **access** and **refresh tokens** for the Nadeo API.
+2. Refresh tokens are used to renew access tokens before they expire.
+3. Two separate Nadeo API audiences are used: **Core** & **Live**.
+4. A separate OAuth flow connects to the Trackmania OAuth API to retrieve your **account ID**, which is required for personal best times (PBs) on each map.
 
 ### Data Collection
 

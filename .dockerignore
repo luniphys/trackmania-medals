@@ -17,8 +17,9 @@ src/trackmania-medals/__pycache__
 src/trackmania-medals/README.md
 tokens/README.md
 data/README.md
+config/.gitkeep
+config/accountId.txt
 
-config/
 data/
 output/
 tokens/

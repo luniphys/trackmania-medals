@@ -1,5 +1,6 @@
 config/accountId.txt
 config/credentials.json
+config/service_account_pw.txt
 data/Final.json
 data/MedalMaps.json
 data/PBMaps.json
