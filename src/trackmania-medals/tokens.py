@@ -168,6 +168,9 @@ def getOAuthCode():
 
     class Handler(http.server.SimpleHTTPRequestHandler): # HTTP request class. How local server reacts to browser requests. Every request is an instance of that class
         
+        def log_message(self, format, *args):
+            pass # suppress request logs in console
+
         def do_GET(self): # Method automatically called when someone calls GET on localhost
 
             nonlocal OAuthCode
@@ -186,6 +189,7 @@ def getOAuthCode():
                 raise KeyboardInterrupt # Jumps to except below, ends server (stops serve_forever())
 
     with socketserver.TCPServer(("", PORT), Handler) as server: # Starts HTTP server, "": Callable under localhost
+        print(f"\nIf browser won't open automatically, open this URL to authenticate: (Ctrl + Click)\n{URL_OAuthCode}\n")
         webbrowser.open(URL_OAuthCode) # Opens url in standard browser
         try:
             server.serve_forever() # Ceeps server running. (Until a request calls method above and except is raised)

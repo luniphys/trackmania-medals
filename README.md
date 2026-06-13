@@ -1,5 +1,5 @@
-[![Docker](https://img.shields.io/badge/Docker-%230db7ed.svg?&logo=docker&logoColor=white)](https://hub.docker.com/r/luniphys/trackmania-medals)
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/Docker-%230db7ed.svg?&logo=docker&logoColor=white)](https://hub.docker.com/r/luniphys/trackmania-medals)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 # Trackmania TOTD Gold Medal Tracker
@@ -125,17 +125,13 @@ docker pull luniphys/trackmania-medals
 ### Run the container
 
 ```bash
-docker run --rm -it \
-  -v trackmania_config:/app/config \
-  -v trackmania_tokens:/app/tokens \
-  -v trackmania_output:/app/output \
-  trackmania-medals
+docker run --rm -it -p 8765:8765 trackmania-medals
 ```
 
 ### Notes
 
 - Run the container in interactive mode: ```-it```
-- Using Docker volumes to persist `config/`, `tokens/` & `output/`
+- You may need to manually open the OAuth URL in your browser to identify with your Ubisoft login. Instructions are shown!
 
 
 

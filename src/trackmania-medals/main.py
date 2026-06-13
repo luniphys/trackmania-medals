@@ -318,8 +318,18 @@ if __name__ == "__main__":
     makeJSON()
 
 
+    if not os.path.exists(BASE_DIR / "output"):
+        os.mkdir(BASE_DIR / "output")
+
     printInfo()
 
-    shutil.copy(BASE_DIR / "output/medals.txt", Path.home() / "Desktop/medals.txt")
+    desktop = Path.home() / "Desktop"
+    if desktop.exists():
+        shutil.copy(BASE_DIR / "output/medals.txt", desktop / "medals.txt")
+
+
+    if os.path.exists(BASE_DIR / "src/trackmania-medals/__pycache__/"):
+        shutil.rmtree(BASE_DIR / "src/trackmania-medals/__pycache__/")
+
 
     input("\n\nPress Enter to exit.")
